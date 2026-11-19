@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sun Yoga — Thiết kế Mobile App (iOS / Android HIG Prototype)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=SF+Pro+Text:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --font-ios: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+      --apple-blue: #007AFF;
+      --apple-green: #34C759;
+      --apple-orange: #FF9500;
+      --apple-red: #FF3B30;
+      --apple-purple: #AF52DE;
+      --transition-ios: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* LIGHT MODE (iOS 18) */
+    .theme-light {
+      --phone-case: #E5E5EA;
+      --phone-border: #D1D1D6;
+      --bg-primary: #F2F2F7;
+      --bg-grouped: #FFFFFF;
+      --bg-secondary: #E5E5EA;
+      --text-main: #000000;
+      --text-sub: #8E8E93;
+      --separator: rgba(60, 60, 67, 0.12);
+      --nav-glass: rgba(242, 242, 247, 0.85);
+      --tab-glass: rgba(255, 255, 255, 0.88);
+      --active-tab: #007AFF;
+      --inactive-tab: #999999;
+      --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    /* DARK MODE (iOS 18 OLED Black) */
+    .theme-dark {
+      --phone-case: #2C2C2E;
+      --phone-border: #3A3A3C;
+      --bg-primary: #000000;
+      --bg-grouped: #1C1C1E;
+      --bg-secondary: #2C2C2E;
+      --text-main: #FFFFFF;
+      --text-sub: #8E8E93;
+      --separator: rgba(255, 255, 255, 0.14);
+      --nav-glass: rgba(0, 0, 0, 0.82);
+      --tab-glass: rgba(28, 28, 30, 0.88);
+      --active-tab: #0A84FF;
+      --inactive-tab: #636366;
+      --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    body {
+      background: #0B0D11;
+      font-family: var(--font-ios);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 16px;
+      color: #FFF;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Device Preview Controller */
+    .controller-bar {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding: 10px 16px;
+      background: #1A1D24;
+      border: 1px solid #2B303C;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+    .controller-title {
+      font-weight: 600;
+      color: #E2E8F0;
+    }
+    .switch-btns {
+      display: flex;
+      background: #0F1115;
+      padding: 3px;
+      border-radius: 8px;
+    }
+    .switch-btn {
+      background: none;
+      border: none;
+      color: #888;
+      font-family: var(--font-ios);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .switch-btn.active {
+      background: #007AFF;
+      color: #FFF;
+      font-weight: 600;
+    }
+
+    /* iPhone 16 Pro Frame */
+    .iphone-frame {
+      width: 393px;
+      height: 852px;
+      background: var(--bg-primary);
+      border-radius: 54px;
+      box-shadow: 0 0 0 12px var(--phone-case), 0 0 0 14px var(--phone-border), 0 30px 90px rgba(0, 0, 0, 0.7);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition-ios);
+    }
+
+    /* Dynamic Island */
+    .dynamic-island {
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 126px;
+      height: 36px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+    }
+    .island-cam {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #111;
+      border: 1px solid #222;
+    }
+
+    /* iOS Status Bar */
+    .status-bar {
+      height: 54px;
+      padding: 14px 28px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      z-index: 900;
+      user-select: none;
+    }
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* Scrollable App Screen Content */
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: 96px; /* Space for bottom tab bar */
+      scroll-behavior: smooth;
+    }
+    .screen-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* iOS Large Title Header */
+    .nav-header {
+      padding: 8px 20px 14px;
+      background: transparent;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .nav-titles {
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-subtitle {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-sub);
+    }
+    .nav-large-title {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+    .btn-add-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--apple-blue);
+      color: #FFF;
+      border: none;
+      font-size: 22px;
+      font-weight: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+      transition: transform 0.15s ease;
+    }
+    .btn-add-circle:active {
+      transform: scale(0.92);
+    }
+
+    /* iOS Search Bar */
+    .search-section {
+      padding: 0 20px 14px;
+    }
+    .ios-search-field {
+      width: 100%;
+      height: 38px;
+      background: var(--bg-secondary);
+      border: none;
+      border-radius: 12px;
+      padding: 0 14px;
+      font-family: var(--font-ios);
+      font-size: 15px;
+      color: var(--text-main);
+      outline: none;
+    }
+    .ios-search-field::placeholder {
+      color: var(--text-sub);
+    }
+
+    /* Quick Filter Pills (Horizontally Scrollable) */
+    .pill-scroll {
+      display: flex;
+      gap: 8px;
+      padding: 0 20px 16px;
+      overflow-x: auto;
+    }
+    .pill-scroll::-webkit-scrollbar { display: none; }
+    .filter-chip {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 14px;
+      background: var(--bg-grouped);
+      color: var(--text-sub);
+      border-radius: 20px;
+      white-space: nowrap;
+      border: 1px solid var(--separator);
+      cursor: pointer;
+    }
+    .filter-chip.active {
+      background: var(--apple-blue);
+      color: #FFF;
+      font-weight: 600;
+      border-color: var(--apple-blue);
+    }
+
+    /* iOS Metric Cards */
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0 20px 20px;
+    }
+    .ios-metric-card {
+      background: var(--bg-grouped);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .metric-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .metric-val {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+    }
+
+    /* Inset Grouped Section */
+    .section-title-label {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-sub);
+      padding: 0 24px 8px;
+    }
+    .inset-list {
+      margin: 0 20px 24px;
+      background: var(--bg-grouped);
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+    }
+    .student-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--separator);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+    .student-item:last-child {
+      border-bottom: none;
+    }
+    .student-item:active {
+      background: var(--bg-secondary);
+    }
+
+    .student-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      color: var(--text-main);
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .student-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .student-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .s-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .s-class {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+    .s-date {
+      font-size: 11px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+
+    .student-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .status-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 10px;
+    }
+    .pill-active {
+      background: rgba(52, 199, 89, 0.15);
+      color: var(--apple-green);
+    }
+    .pill-warning {
+      background: rgba(255, 149, 0, 0.15);
+      color: var(--apple-orange);
+    }
+    .pill-danger {
+      background: rgba(255, 59, 48, 0.15);
+      color: var(--apple-red);
+    }
+    .btn-collect-fee {
+      background: var(--bg-secondary);
+      border: none;
+      font-family: var(--font-ios);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--apple-blue);
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* iOS Translucent Tab Bar (Bottom) */
+    .ios-tab-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 84px;
+      background: var(--tab-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--separator);
+      display: flex;
+      justify-content: space-around;
+      padding-top: 8px;
+      z-index: 950;
+    }
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--inactive-tab);
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 600;
+      width: 70px;
+    }
+    .tab-item.active {
+      color: var(--active-tab);
+    }
+    .tab-icon-symbol {
+      font-size: 19px;
+      line-height: 1;
+    }
+
+    /* iOS Home Indicator Bar */
+    .home-indicator {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 134px;
+      height: 5px;
+      background: var(--text-main);
+      opacity: 0.8;
+      border-radius: 3px;
+      z-index: 1000;
+    }
+
+    /* iOS Action Sheet / Bottom Modal */
+    .ios-sheet-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1200;
+      display: none;
+      align-items: flex-end;
+    }
+    .ios-sheet-backdrop.active {
+      display: flex;
+    }
+    .ios-sheet {
+      width: 100%;
+      background: var(--bg-grouped);
+      border-radius: 24px 24px 0 0;
+      padding: 20px 24px 34px;
+      animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .sheet-handle {
+      width: 36px;
+      height: 5px;
+      background: var(--separator);
+      border-radius: 3px;
+      margin: 0 auto 16px;
+    }
+    .sheet-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 16px;
+    }
+    .sheet-field {
+      margin-bottom: 12px;
+    }
+    .sheet-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .sheet-input {
+      width: 100%;
+      height: 44px;
+      background: var(--bg-secondary);
+      border: none;
+      border-radius: 10px;
+      padding: 0 12px;
+      font-family: var(--font-ios);
+      font-size: 15px;
+      color: var(--text-main);
+    }
+    .sheet-btn-primary {
+      width: 100%;
+      height: 48px;
+      background: var(--apple-blue);
+      color: #FFF;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Controller -->
+  <div class="controller-bar">
+    <div class="controller-title">Sun Yoga — Mô Phỏng Mobile App (iOS / Android)</div>
+    <div class="switch-btns">
+      <button class="switch-btn active" onclick="setTheme('theme-light', this)">Light</button>
+      <button class="switch-btn" onclick="setTheme('theme-dark', this)">Dark</button>
+    </div>
+  </div>
+
+  <!-- iPhone 16 Pro Frame -->
+  <div class="iphone-frame theme-light" id="iphone">
+
+    <!-- Dynamic Island -->
+    <div class="dynamic-island">
+      <div class="island-cam"></div>
+    </div>
+
+    <!-- iOS Status Bar -->
+    <div class="status-bar">
+      <div id="ios-time">17:18</div>
+      <div class="status-icons">
+        <span>5G</span>
+        <span>100%</span>
+      </div>
+    </div>
+
+    <!-- Main Screen Views -->
+    <div class="screen-content" id="screen-container">
+
+      <!-- Navigation Header -->
+      <header class="nav-header">
+        <div class="nav-titles">
+          <span class="nav-subtitle">Sun Yoga Studio</span>
+          <h1 class="nav-large-title">Học viên</h1>
+        </div>
+        <button class="btn-add-circle" onclick="openSheet('Thêm học viên mới')">+</button>
+      </header>
+
+      <!-- Search Field -->
+      <div class="search-section">
+        <input type="text" class="ios-search-field" placeholder="Tìm theo tên, SĐT, lớp...">
+      </div>
+
+      <!-- Quick Filter Chips -->
+      <div class="pill-scroll">
+        <button class="filter-chip active">Tất cả (24)</button>
+        <button class="filter-chip">Đang học (18)</button>
+        <button class="filter-chip">Sắp hết hạn (4)</button>
+        <button class="filter-chip">Quá hạn (2)</button>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="metric-row">
+        <div class="ios-metric-card">
+          <span class="metric-label">Tổng học viên</span>
+          <span class="metric-val">24</span>
+        </div>
+        <div class="ios-metric-card">
+          <span class="metric-label" style="color:var(--apple-red);">Quá hạn phí</span>
+          <span class="metric-val" style="color:var(--apple-red);">2</span>
+        </div>
+      </div>
+
+      <!-- Inset Grouped Student List -->
+      <div class="section-title-label">Danh sách cần theo dõi</div>
+      <div class="inset-list">
+
+        <!-- Student 1 -->
+        <div class="student-item" onclick="openSheet('Thu học phí: Trần Minh Đức', 'Trần Minh Đức')">
+          <div class="student-avatar">MĐ</div>
+          <div class="student-info">
+            <div class="student-name-row">
+              <span class="s-name">Trần Minh Đức</span>
+            </div>
+            <span class="s-class">Lớp Chiều (17:30 - 18:45)</span>
+            <span class="s-date">Hạn: 25/10/2026 (Còn 2 ngày)</span>
+          </div>
+          <div class="student-actions">
+            <span class="status-pill pill-warning">Hết hạn sau 2 ngày</span>
+            <button class="btn-collect-fee">Thu phí</button>
+          </div>
+        </div>
+
+        <!-- Student 2 -->
+        <div class="student-item" onclick="openSheet('Thu học phí: Lê Bảo Ngọc', 'Lê Bảo Ngọc')">
+          <div class="student-avatar" style="color:var(--apple-red);">BN</div>
+          <div class="student-info">
+            <div class="student-name-row">
+              <span class="s-name">Lê Bảo Ngọc</span>
+            </div>
+            <span class="s-class">Lớp Sáng (06:00 - 07:15)</span>
+            <span class="s-date" style="color:var(--apple-red);">Hạn: 15/10/2026 (Quá 8 ngày)</span>
+          </div>
+          <div class="student-actions">
+            <span class="status-pill pill-danger">Quá hạn 8 ngày</span>
+            <button class="btn-collect-fee">Thu phí</button>
+          </div>
+        </div>
+
+        <!-- Student 3 -->
+        <div class="student-item" onclick="openSheet('Thu học phí: Đặng Hoàng Nam', 'Đặng Hoàng Nam')">
+          <div class="student-avatar">HN</div>
+          <div class="student-info">
+            <div class="student-name-row">
+              <span class="s-name">Đặng Hoàng Nam</span>
+            </div>
+            <span class="s-class">Lớp Chiều (17:30 - 18:45)</span>
+            <span class="s-date">Hạn: 27/10/2026 (Còn 4 ngày)</span>
+          </div>
+          <div class="student-actions">
+            <span class="status-pill pill-warning">Hết hạn sau 4 ngày</span>
+            <button class="btn-collect-fee">Thu phí</button>
+          </div>
+        </div>
+
+        <!-- Student 4 -->
+        <div class="student-item" onclick="openSheet('Thu học phí: Nguyễn Thu Trang', 'Nguyễn Thu Trang')">
+          <div class="student-avatar" style="color:var(--apple-green);">TT</div>
+          <div class="student-info">
+            <div class="student-name-row">
+              <span class="s-name">Nguyễn Thu Trang</span>
+            </div>
+            <span class="s-class">Lớp Sáng (06:00 - 07:15)</span>
+            <span class="s-date">Hạn: 01/11/2026 (Còn 9 ngày)</span>
+          </div>
+          <div class="student-actions">
+            <span class="status-pill pill-active">Hoạt động</span>
+            <button class="btn-collect-fee">Chi tiết</button>
+          </div>
+        </div>
+
+        <!-- Student 5 -->
+        <div class="student-item" onclick="openSheet('Thu học phí: Phạm Phương Linh', 'Phạm Phương Linh')">
+          <div class="student-avatar" style="color:var(--apple-green);">PL</div>
+          <div class="student-info">
+            <div class="student-name-row">
+              <span class="s-name">Phạm Phương Linh</span>
+            </div>
+            <span class="s-class">Lớp Trưa (11:45 - 12:45)</span>
+            <span class="s-date">Hạn: 10/11/2026 (Còn 18 ngày)</span>
+          </div>
+          <div class="student-actions">
+            <span class="status-pill pill-active">Hoạt động</span>
+            <button class="btn-collect-fee">Chi tiết</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Bottom Action Sheet Modal -->
+    <div class="ios-sheet-backdrop" id="sheet-backdrop" onclick="if(event.target===this) closeSheet()">
+      <div class="ios-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title" id="sheet-header">Thêm học viên mới</div>
+        <div class="sheet-field">
+          <label class="sheet-label">Họ và tên học viên</label>
+          <input type="text" class="sheet-input" id="sheet-input-name" placeholder="Ví dụ: Nguyễn Văn A">
+        </div>
+        <div class="sheet-field">
+          <label class="sheet-label">Số điện thoại</label>
+          <input type="tel" class="sheet-input" placeholder="0912 345 678">
+        </div>
+        <div class="sheet-field">
+          <label class="sheet-label">Gói tập đăng ký</label>
+          <input type="text" class="sheet-input" value="Gói 1 Tháng — 800.000 VND">
+        </div>
+        <button class="sheet-btn-primary" onclick="closeSheet()">Lưu học viên</button>
+      </div>
+    </div>
+
+    <!-- Bottom iOS Tab Bar -->
+    <nav class="ios-tab-bar">
+      <div class="tab-item active">
+        <div class="tab-icon-symbol">👥</div>
+        <span>Học viên</span>
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon-symbol">📅</div>
+        <span>Lịch tập</span>
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon-symbol">💳</div>
+        <span>Thu phí</span>
+      </div>
+      <div class="tab-item">
+        <div class="tab-icon-symbol">⚙️</div>
+        <span>Cài đặt</span>
+      </div>
+    </nav>
+
+    <!-- Home Indicator -->
+    <div class="home-indicator"></div>
+
+  </div>
+
+  <script>
+    function setTheme(themeName, btn) {
+      const frame = document.getElementById('iphone');
+      frame.className = 'iphone-frame ' + themeName;
+      document.querySelectorAll('.switch-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function openSheet(title, name = '') {
+      document.getElementById('sheet-header').textContent = title;
+      document.getElementById('sheet-input-name').value = name;
+      document.getElementById('sheet-backdrop').classList.add('active');
+    }
+
+    function closeSheet() {
+      document.getElementById('sheet-backdrop').classList.remove('active');
+    }
+
+    function updateTime() {
+      const d = new Date();
+      const h = String(d.getHours()).padStart(2, '0');
+      const m = String(d.getMinutes()).padStart(2, '0');
+      document.getElementById('ios-time').textContent = `${h}:${m}`;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+  </script>
+</body>
+</html>

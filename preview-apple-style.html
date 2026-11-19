@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sun Yoga — Thiết kế phong cách Apple (macOS HIG Design Preview)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=SF+Pro+Text:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* CSS Variables & Apple Human Interface Tokens */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      /* Typography */
+      --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", sans-serif;
+      --font-mono: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
+
+      /* Apple System Colors */
+      --apple-blue: #007AFF;
+      --apple-blue-hover: #0066D6;
+      --apple-blue-subtle: rgba(0, 122, 255, 0.1);
+      --apple-green: #34C759;
+      --apple-green-subtle: rgba(52, 199, 89, 0.12);
+      --apple-orange: #FF9500;
+      --apple-orange-subtle: rgba(255, 149, 0, 0.12);
+      --apple-red: #FF3B30;
+      --apple-red-subtle: rgba(255, 59, 48, 0.12);
+
+      /* Radius */
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+      --radius-pill: 9999px;
+
+      /* Transitions */
+      --ease-apple: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    /* LIGHT MODE (macOS Sequoia Light) */
+    body.mode-light {
+      --bg-window: #F5F5F7;
+      --surface: rgba(255, 255, 255, 0.85);
+      --surface-solid: #FFFFFF;
+      --surface-secondary: #EBEBF0;
+      --surface-tertiary: #F2F2F7;
+      --border-subtle: rgba(60, 60, 67, 0.08);
+      --border-strong: rgba(60, 60, 67, 0.16);
+      --text-primary: #1D1D1F;
+      --text-secondary: #6E6E73;
+      --text-tertiary: #86868B;
+      --shadow-window: 0 20px 48px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+      --table-row-hover: rgba(0, 122, 255, 0.04);
+      --btn-secondary-bg: #E3E3E8;
+      --btn-secondary-hover: #D8D8DE;
+      --btn-secondary-text: #1D1D1F;
+    }
+
+    /* DARK MODE (macOS Sequoia Dark) */
+    body.mode-dark {
+      --bg-window: #1E1E20;
+      --surface: rgba(40, 40, 43, 0.85);
+      --surface-solid: #2C2C2E;
+      --surface-secondary: #3A3A3C;
+      --surface-tertiary: #242426;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text-primary: #F5F5F7;
+      --text-secondary: #A1A1A6;
+      --text-tertiary: #6E6E73;
+      --shadow-window: 0 24px 64px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(255, 255, 255, 0.05);
+      --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.25);
+      --table-row-hover: rgba(255, 255, 255, 0.04);
+      --btn-secondary-bg: #3A3A3C;
+      --btn-secondary-hover: #48484A;
+      --btn-secondary-text: #F5F5F7;
+    }
+
+    body {
+      font-family: var(--font-system);
+      background-color: #0E0F12;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 48px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.3s ease;
+    }
+
+    /* Presentation Control Switcher */
+    .top-toolbar {
+      width: 100%;
+      max-width: 1320px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 10px 16px;
+      background: rgba(30, 30, 35, 0.8);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      color: #EEE;
+      font-size: 13px;
+    }
+    .top-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+    }
+    .apple-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: rgba(0, 122, 255, 0.2);
+      color: #38BDF8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+    }
+    .mode-switch-group {
+      display: flex;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+    }
+    .mode-switch-btn {
+      background: none;
+      border: none;
+      color: #999;
+      font-family: var(--font-system);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: var(--ease-apple);
+    }
+    .mode-switch-btn.active {
+      background: #FFF;
+      color: #111;
+      font-weight: 600;
+    }
+
+    /* macOS Window Shell */
+    .window-shell {
+      width: 100%;
+      max-width: 1320px;
+      background: var(--bg-window);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-window);
+      border: 1px solid var(--border-strong);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--ease-apple);
+    }
+
+    /* macOS Window Titlebar */
+    .window-titlebar {
+      height: 48px;
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      user-select: none;
+    }
+    .traffic-lights {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .light {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .light-close { background-color: #FF5F56; border: 0.5px solid #E0443E; }
+    .light-minimize { background-color: #FFBD2E; border: 0.5px solid #DEA123; }
+    .light-zoom { background-color: #27C93F; border: 0.5px solid #1AAB29; }
+
+    .window-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: -0.01em;
+    }
+    .window-status-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      background: var(--apple-blue-subtle);
+      color: var(--apple-blue);
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+    }
+
+    /* Unified App Header (Cupertino Toolbar) */
+    .app-header {
+      padding: 20px 24px;
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .header-branding {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .app-title-group h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--text-primary);
+      line-height: 1.15;
+    }
+    .app-title-group p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Action Controls & Revenue Block */
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn {
+      font-family: var(--font-system);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--ease-apple);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-apple-primary {
+      background: var(--apple-blue);
+      color: #FFFFFF;
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0, 122, 255, 0.2);
+    }
+    .btn-apple-primary:hover {
+      background: var(--apple-blue-hover);
+    }
+    .btn-apple-secondary {
+      background: var(--btn-secondary-bg);
+      color: var(--btn-secondary-text);
+      border-color: var(--border-subtle);
+    }
+    .btn-apple-secondary:hover {
+      background: var(--btn-secondary-hover);
+    }
+    .badge-count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: var(--surface-solid);
+      color: var(--text-secondary);
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+      border: 1px solid var(--border-subtle);
+    }
+    .badge-alert {
+      background: var(--apple-red);
+      color: #FFF;
+      font-weight: 700;
+    }
+
+    /* Apple Inset Revenue Box */
+    .revenue-card {
+      background: var(--surface-tertiary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 8px 14px;
+      text-align: right;
+    }
+    .revenue-caption {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .revenue-number {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 1px;
+    }
+    .revenue-toggle-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-system);
+      font-size: 11px;
+      color: var(--apple-blue);
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+      margin-top: 2px;
+    }
+
+    /* Main Workspace Layout (2 Columns) */
+    .app-workspace {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+      padding: 24px;
+    }
+
+    /* Left Column: Student List & Tables */
+    .main-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Sub-header Bar (Collapse Toggle & Search) */
+    .table-control-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .title-collapse-btn {
+      background: none;
+      border: none;
+      font-family: var(--font-system);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+    }
+    .collapse-chevron {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      padding: 2px 6px;
+      background: var(--surface-secondary);
+      border-radius: var(--radius-sm);
+    }
+    .student-total-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+    }
+
+    /* Apple Search Field */
+    .apple-search-wrap {
+      width: 300px;
+      position: relative;
+    }
+    .apple-search-input {
+      width: 100%;
+      font-family: var(--font-system);
+      font-size: 13px;
+      padding: 8px 14px;
+      background: var(--surface-tertiary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      outline: none;
+      transition: var(--ease-apple);
+    }
+    .apple-search-input:focus {
+      background: var(--surface-solid);
+      border-color: var(--apple-blue);
+      box-shadow: 0 0 0 3px var(--apple-blue-subtle);
+    }
+    .apple-search-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    /* Summary Stats Cards (Apple Inset Grouped) */
+    .summary-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .stat-card {
+      background: var(--surface-solid);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stat-caption {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .stat-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .stat-number {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    /* Student Inset Table (macOS / iOS Table Style) */
+    .table-card {
+      background: var(--surface-solid);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    thead th {
+      background: var(--surface-tertiary);
+      color: var(--text-secondary);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background-color 0.15s ease;
+    }
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+    tbody tr:hover {
+      background-color: var(--table-row-hover);
+    }
+    tbody td {
+      padding: 14px 16px;
+      color: var(--text-primary);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .col-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .col-phone {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .col-class {
+      display: inline-block;
+      font-size: 12px;
+      padding: 3px 8px;
+      background: var(--surface-secondary);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+    }
+    .col-date {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Apple Semantic Status Pills */
+    .apple-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .apple-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .status-apple-active {
+      background: var(--apple-green-subtle);
+      color: var(--apple-green);
+    }
+    .status-apple-warning {
+      background: var(--apple-orange-subtle);
+      color: var(--apple-orange);
+    }
+    .status-apple-danger {
+      background: var(--apple-red-subtle);
+      color: var(--apple-red);
+    }
+
+    /* Table Actions */
+    .row-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .row-link {
+      background: none;
+      border: none;
+      font-family: var(--font-system);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--apple-blue);
+      cursor: pointer;
+      padding: 0;
+      transition: var(--ease-apple);
+    }
+    .row-link:hover {
+      text-decoration: underline;
+    }
+    .row-link-danger {
+      color: var(--apple-red);
+    }
+
+    /* Right Sidebar Widgets */
+    .sidebar-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Apple Clock Widget */
+    .apple-clock-card {
+      background: var(--surface-solid);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+      text-align: center;
+    }
+    .apple-time-digits {
+      font-family: var(--font-system);
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    .apple-date-str {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+    .apple-lunar-str {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--apple-orange);
+      background: var(--apple-orange-subtle);
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      margin-top: 6px;
+    }
+
+    /* Apple Calendar Widget */
+    .apple-calendar-card {
+      background: var(--surface-solid);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--shadow-card);
+    }
+    .apple-cal-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .apple-cal-month {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .apple-nav-buttons {
+      display: flex;
+      gap: 4px;
+    }
+    .apple-nav-btn {
+      background: var(--surface-secondary);
+      border: none;
+      color: var(--text-primary);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+    .apple-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+      text-align: center;
+    }
+    .apple-day-header {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      padding-bottom: 6px;
+    }
+    .apple-day-box {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--ease-apple);
+      position: relative;
+    }
+    .apple-day-box:hover {
+      background: var(--surface-secondary);
+    }
+    .apple-day-box.apple-today {
+      background: var(--apple-blue);
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+    .apple-day-box.has-note::after {
+      content: "";
+      position: absolute;
+      bottom: 2px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--apple-orange);
+    }
+    .apple-lunar-mini {
+      font-size: 8px;
+      opacity: 0.7;
+    }
+
+    /* Apple Reminders / Attention Panel */
+    .apple-reminders-card {
+      background: var(--surface-solid);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-card);
+    }
+    .reminders-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+    }
+    .reminder-item {
+      padding: 10px 12px;
+      background: var(--surface-tertiary);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+      border-left: 3px solid var(--apple-red);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .reminder-item.warning {
+      border-left-color: var(--apple-orange);
+    }
+    .reminder-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .reminder-desc {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    /* Modal Sheet (macOS Modal Style) */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-sheet {
+      width: 480px;
+      max-width: 92vw;
+      background: var(--surface-solid);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 32px 72px rgba(0, 0, 0, 0.28);
+      overflow: hidden;
+      animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-sheet-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-sheet-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+    }
+    .modal-sheet-body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .apple-input, .apple-select {
+      width: 100%;
+      font-family: var(--font-system);
+      font-size: 13.5px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: var(--surface-tertiary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      outline: none;
+      transition: var(--ease-apple);
+    }
+    .apple-input:focus, .apple-select:focus {
+      background: var(--surface-solid);
+      border-color: var(--apple-blue);
+      box-shadow: 0 0 0 3px var(--apple-blue-subtle);
+    }
+    .modal-sheet-footer {
+      padding: 14px 24px;
+      background: var(--surface-tertiary);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body class="mode-light">
+
+  <!-- Top Preview Toolbar -->
+  <aside class="top-toolbar">
+    <div class="top-toolbar-left">
+      <span>Sun Yoga Studio — Bản mẫu phong cách Apple (macOS HIG)</span>
+      <span class="apple-badge">Apple Design System • Zero Emoji</span>
+    </div>
+    <div class="mode-switch-group">
+      <button class="mode-switch-btn active" onclick="setMode('mode-light', this)">Light (macOS Silver)</button>
+      <button class="mode-switch-btn" onclick="setMode('mode-dark', this)">Dark (Space Gray)</button>
+    </div>
+  </aside>
+
+  <!-- Main Window Shell -->
+  <div class="window-shell">
+
+    <!-- macOS Window Chrome Titlebar -->
+    <header class="window-titlebar">
+      <div class="traffic-lights">
+        <span class="light light-close"></span>
+        <span class="light light-minimize"></span>
+        <span class="light light-zoom"></span>
+      </div>
+      <div class="window-title">Sun Yoga — Quản lý học viên & Học phí</div>
+      <div>
+        <span class="window-status-pill">Sẵn sàng</span>
+      </div>
+    </header>
+
+    <!-- Unified Toolbar & Studio Header -->
+    <div class="app-header">
+      <div class="header-branding">
+        <div class="app-title-group">
+          <h1>Sun Yoga Studio</h1>
+          <p>Theo dõi học viên, hạn thu học phí và lịch lớp học</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button class="btn btn-apple-primary" onclick="openModal()">
+          + Thêm học viên
+        </button>
+        <button class="btn btn-apple-secondary">
+          Thông báo
+          <span class="badge-count badge-alert">4</span>
+        </button>
+        <button class="btn btn-apple-secondary">
+          Danh sách đã thu
+          <span class="badge-count">18</span>
+        </button>
+        <button class="btn btn-apple-secondary">
+          Cài đặt
+        </button>
+
+        <div class="revenue-card">
+          <div class="revenue-caption">Tổng đã thu</div>
+          <div class="revenue-number" id="revenue-display">28.400.000 VND</div>
+          <button class="revenue-toggle-btn" onclick="toggleRevenue(this)">[Ẩn số tiền]</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workspace Grid (Left: Table, Right: Sidebar) -->
+    <main class="app-workspace">
+
+      <!-- Left Column -->
+      <section class="main-section">
+
+        <!-- Table Control Bar -->
+        <div class="table-control-bar">
+          <button class="title-collapse-btn" onclick="toggleStudentList()">
+            <span class="collapse-chevron" id="collapse-chevron">▼</span>
+            Danh sách học viên
+            <span class="student-total-label">(24 học viên)</span>
+          </button>
+
+          <div class="apple-search-wrap">
+            <input type="text" class="apple-search-input" placeholder="Tìm theo tên, số điện thoại, lớp...">
+          </div>
+        </div>
+
+        <!-- Apple Summary Stats (Inset Grouped) -->
+        <div class="summary-stats-grid" id="stats-container">
+          <div class="stat-card">
+            <div class="stat-label-row">
+              <span class="stat-caption">Tổng số học viên</span>
+              <span class="stat-pill" style="background:var(--apple-blue-subtle); color:var(--apple-blue);">Tất cả</span>
+            </div>
+            <div class="stat-number">24</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label-row">
+              <span class="stat-caption">Học phí quá hạn</span>
+              <span class="stat-pill" style="background:var(--apple-red-subtle); color:var(--apple-red);">Cần thu ngay</span>
+            </div>
+            <div class="stat-number" style="color:var(--apple-red);">2</div>
+          </div>
+        </div>
+
+        <!-- Student Data Table Card -->
+        <div class="table-card" id="table-card">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Họ và tên</th>
+                  <th>Số điện thoại</th>
+                  <th>Lớp đăng ký</th>
+                  <th>Ngày vào lớp</th>
+                  <th>Ngày hết hạn</th>
+                  <th>Trạng thái</th>
+                  <th style="text-align: right;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="col-name">Nguyễn Thu Trang</span></td>
+                  <td><span class="col-phone">0912 345 678</span></td>
+                  <td><span class="col-class">Lớp Sáng (06:00 - 07:15)</span></td>
+                  <td><span class="col-date">01/09/2026</span></td>
+                  <td><span class="col-date">01/11/2026</span></td>
+                  <td><span class="apple-status status-apple-active">Hoạt động (9 ngày)</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <button class="row-link" onclick="openModal('Nguyễn Thu Trang')">Thu học phí</button>
+                      <button class="row-link">Sửa</button>
+                      <button class="row-link row-link-danger">Xóa</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="col-name">Trần Minh Đức</span></td>
+                  <td><span class="col-phone">0988 776 554</span></td>
+                  <td><span class="col-class">Lớp Chiều (17:30 - 18:45)</span></td>
+                  <td><span class="col-date">25/08/2026</span></td>
+                  <td><span class="col-date">25/10/2026</span></td>
+                  <td><span class="apple-status status-apple-warning">Sắp hết hạn (2 ngày)</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <button class="row-link" onclick="openModal('Trần Minh Đức')">Thu học phí</button>
+                      <button class="row-link">Sửa</button>
+                      <button class="row-link row-link-danger">Xóa</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="col-name">Lê Bảo Ngọc</span></td>
+                  <td><span class="col-phone">0903 112 233</span></td>
+                  <td><span class="col-class">Lớp Sáng (06:00 - 07:15)</span></td>
+                  <td><span class="col-date">15/07/2026</span></td>
+                  <td><span class="col-date">15/10/2026</span></td>
+                  <td><span class="apple-status status-apple-danger">Quá hạn (8 ngày)</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <button class="row-link" onclick="openModal('Lê Bảo Ngọc')">Thu học phí</button>
+                      <button class="row-link">Sửa</button>
+                      <button class="row-link row-link-danger">Xóa</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="col-name">Phạm Phương Linh</span></td>
+                  <td><span class="col-phone">0934 556 789</span></td>
+                  <td><span class="col-class">Lớp Trưa (11:45 - 12:45)</span></td>
+                  <td><span class="col-date">10/10/2026</span></td>
+                  <td><span class="col-date">10/11/2026</span></td>
+                  <td><span class="apple-status status-apple-active">Hoạt động (18 ngày)</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <button class="row-link" onclick="openModal('Phạm Phương Linh')">Thu học phí</button>
+                      <button class="row-link">Sửa</button>
+                      <button class="row-link row-link-danger">Xóa</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="col-name">Đặng Hoàng Nam</span></td>
+                  <td><span class="col-phone">0971 223 344</span></td>
+                  <td><span class="col-class">Lớp Chiều (17:30 - 18:45)</span></td>
+                  <td><span class="col-date">05/09/2026</span></td>
+                  <td><span class="col-date">27/10/2026</span></td>
+                  <td><span class="apple-status status-apple-warning">Sắp hết hạn (4 ngày)</span></td>
+                  <td>
+                    <div class="row-actions">
+                      <button class="row-link" onclick="openModal('Đặng Hoàng Nam')">Thu học phí</button>
+                      <button class="row-link">Sửa</button>
+                      <button class="row-link row-link-danger">Xóa</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Sidebar Widgets -->
+      <aside class="sidebar-section">
+
+        <!-- Clock Widget -->
+        <div class="apple-clock-card">
+          <div class="apple-time-digits" id="apple-clock-time">17:15:30</div>
+          <div class="apple-date-str">Thứ Sáu, 23 Tháng 10, 2026</div>
+          <div class="apple-lunar-str">Âm lịch: 13 Tháng 9 (Bính Ngọ)</div>
+        </div>
+
+        <!-- Apple Calendar Widget -->
+        <div class="apple-calendar-card">
+          <div class="apple-cal-nav">
+            <span class="apple-cal-month">Tháng 10, 2026</span>
+            <div class="apple-nav-buttons">
+              <button class="apple-nav-btn">Trước</button>
+              <button class="apple-nav-btn">Sau</button>
+            </div>
+          </div>
+          <div class="apple-cal-grid">
+            <div class="apple-day-header">T2</div>
+            <div class="apple-day-header">T3</div>
+            <div class="apple-day-header">T4</div>
+            <div class="apple-day-header">T5</div>
+            <div class="apple-day-header">T6</div>
+            <div class="apple-day-header">T7</div>
+            <div class="apple-day-header">CN</div>
+
+            <div class="apple-day-box" style="opacity:0.35;">28<span class="apple-lunar-mini">18</span></div>
+            <div class="apple-day-box" style="opacity:0.35;">29<span class="apple-lunar-mini">19</span></div>
+            <div class="apple-day-box" style="opacity:0.35;">30<span class="apple-lunar-mini">20</span></div>
+            <div class="apple-day-box">1<span class="apple-lunar-mini">21</span></div>
+            <div class="apple-day-box">2<span class="apple-lunar-mini">22</span></div>
+            <div class="apple-day-box">3<span class="apple-lunar-mini">23</span></div>
+            <div class="apple-day-box">4<span class="apple-lunar-mini">24</span></div>
+
+            <div class="apple-day-box">5<span class="apple-lunar-mini">25</span></div>
+            <div class="apple-day-box">6<span class="apple-lunar-mini">26</span></div>
+            <div class="apple-day-box">7<span class="apple-lunar-mini">27</span></div>
+            <div class="apple-day-box">8<span class="apple-lunar-mini">28</span></div>
+            <div class="apple-day-box">9<span class="apple-lunar-mini">29</span></div>
+            <div class="apple-day-box">10<span class="apple-lunar-mini">1/9</span></div>
+            <div class="apple-day-box">11<span class="apple-lunar-mini">2</span></div>
+
+            <div class="apple-day-box">12<span class="apple-lunar-mini">3</span></div>
+            <div class="apple-day-box">13<span class="apple-lunar-mini">4</span></div>
+            <div class="apple-day-box">14<span class="apple-lunar-mini">5</span></div>
+            <div class="apple-day-box has-note">15<span class="apple-lunar-mini">6</span></div>
+            <div class="apple-day-box">16<span class="apple-lunar-mini">7</span></div>
+            <div class="apple-day-box">17<span class="apple-lunar-mini">8</span></div>
+            <div class="apple-day-box">18<span class="apple-lunar-mini">9</span></div>
+
+            <div class="apple-day-box">19<span class="apple-lunar-mini">10</span></div>
+            <div class="apple-day-box">20<span class="apple-lunar-mini">11</span></div>
+            <div class="apple-day-box">21<span class="apple-lunar-mini">12</span></div>
+            <div class="apple-day-box">22<span class="apple-lunar-mini">13</span></div>
+            <div class="apple-day-box apple-today has-note">23<span class="apple-lunar-mini">14</span></div>
+            <div class="apple-day-box">24<span class="apple-lunar-mini">15</span></div>
+            <div class="apple-day-box has-note">25<span class="apple-lunar-mini">16</span></div>
+          </div>
+        </div>
+
+        <!-- Reminders Card -->
+        <div class="apple-reminders-card">
+          <div class="reminders-title">Cần chú ý học phí</div>
+          <div class="reminder-item">
+            <div class="reminder-name">Lê Bảo Ngọc</div>
+            <div class="reminder-desc">Quá hạn 8 ngày • Gói 1 Tháng</div>
+          </div>
+          <div class="reminder-item warning">
+            <div class="reminder-name">Trần Minh Đức</div>
+            <div class="reminder-desc">Còn 2 ngày hết hạn • Gói 3 Tháng</div>
+          </div>
+        </div>
+
+      </aside>
+
+    </main>
+
+  </div>
+
+  <!-- macOS Modal Sheet -->
+  <div class="modal-overlay" id="apple-modal" onclick="if(event.target===this) closeModal()">
+    <div class="modal-sheet">
+      <div class="modal-sheet-header">
+        <h3 class="modal-sheet-title" id="modal-title">Thu học phí học viên</h3>
+        <button class="btn btn-apple-secondary" onclick="closeModal()">Đóng</button>
+      </div>
+      <div class="modal-sheet-body">
+        <div>
+          <label class="field-label">Họ và tên học viên</label>
+          <input type="text" class="apple-input" id="m-name" value="Nguyễn Thu Trang">
+        </div>
+        <div>
+          <label class="field-label">Số điện thoại</label>
+          <input type="text" class="apple-input" value="0912 345 678">
+        </div>
+        <div>
+          <label class="field-label">Lớp học đăng ký</label>
+          <select class="apple-select">
+            <option>Lớp Sáng (06:00 - 07:15)</option>
+            <option>Lớp Trưa (11:45 - 12:45)</option>
+            <option>Lớp Chiều (17:30 - 18:45)</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Gói gia hạn học phí</label>
+          <select class="apple-select">
+            <option>Gói 1 Tháng — 800.000 VND</option>
+            <option>Gói 3 Tháng — 2.200.000 VND</option>
+            <option>Gói 6 Tháng — 4.000.000 VND</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-sheet-footer">
+        <button class="btn btn-apple-secondary" onclick="closeModal()">Hủy bỏ</button>
+        <button class="btn btn-apple-primary" onclick="closeModal()">Xác nhận lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function setMode(mode, btn) {
+      document.body.className = mode;
+      document.querySelectorAll('.mode-switch-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    let isCollapsed = false;
+    function toggleStudentList() {
+      const table = document.getElementById('table-card');
+      const chevron = document.getElementById('collapse-chevron');
+      isCollapsed = !isCollapsed;
+      if (isCollapsed) {
+        table.style.display = 'none';
+        chevron.textContent = '▶';
+      } else {
+        table.style.display = 'block';
+        chevron.textContent = '▼';
+      }
+    }
+
+    let isHidden = false;
+    function toggleRevenue(btn) {
+      const el = document.getElementById('revenue-display');
+      isHidden = !isHidden;
+      if (isHidden) {
+        el.textContent = '•••••••• VND';
+        btn.textContent = '[Hiện số tiền]';
+      } else {
+        el.textContent = '28.400.000 VND';
+        btn.textContent = '[Ẩn số tiền]';
+      }
+    }
+
+    function openModal(name) {
+      if (name) {
+        document.getElementById('modal-title').textContent = 'Thu học phí: ' + name;
+        document.getElementById('m-name').value = name;
+      } else {
+        document.getElementById('modal-title').textContent = 'Thêm học viên mới';
+        document.getElementById('m-name').value = '';
+      }
+      document.getElementById('apple-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('apple-modal').classList.remove('open');
+    }
+
+    function updateLiveClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      const el = document.getElementById('apple-clock-time');
+      if (el) el.textContent = `${h}:${m}:${s}`;
+    }
+    setInterval(updateLiveClock, 1000);
+    updateLiveClock();
+  </script>
+</body>
+</html>

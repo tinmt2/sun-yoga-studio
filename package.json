@@ -1,0 +1,24 @@
+{
+  "name": "sun-yoga-student-tracker",
+  "version": "1.0.0",
+  "description": "Ứng dụng theo dõi thời hạn học phí học viên",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:mobile": "npx --yes serve mobile -l 3000",
+    "build": "electron-builder",
+    "check:antigravity": "node .agents/hooks/antigravity-doctor.mjs",
+    "test:antigravity": "node .agents/hooks/tests/antigravity.test.mjs"
+  },
+  "keywords": [
+    "electron",
+    "student",
+    "tracker"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}

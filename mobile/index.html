@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Sun Yoga Studio — Quản Lý Học Viên</title>
+  
+  <!-- PWA & Apple Web App Meta Tags -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#007AFF">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Sun Yoga">
+  
+  <!-- Editorial Luxury Fonts: Playfair Display + Plus Jakarta Sans + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="./styles.css?v=9.2">
+</head>
+<body>
+
+  <!-- Studio Wallpaper Layer & Dynamic Frosted Overlay -->
+  <div class="app-wallpaper-layer" id="app-wallpaper-layer" aria-hidden="true"></div>
+  <div class="app-wallpaper-overlay" id="app-wallpaper-overlay" aria-hidden="true"></div>
+
+  <!-- Fullscreen Responsive Apple App Shell -->
+  <div class="apple-app-shell">
+
+    <!-- ==================================================== -->
+    <!-- DESKTOP SIDEBAR (Visible on screens >= 768px)       -->
+    <!-- ==================================================== -->
+    <aside class="desktop-sidebar">
+      <!-- Studio Brand Header -->
+      <div class="sidebar-brand">
+        <div class="brand-sun-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </div>
+        <div class="brand-text-block">
+          <span class="brand-title">SUN YOGA</span>
+          <span class="brand-sub">STUDIO WELLNESS</span>
+        </div>
+      </div>
+
+      <!-- Quick Add CTA Button -->
+      <div class="sidebar-cta-wrap">
+        <button class="sidebar-cta-btn" id="sidebar-btn-add" title="Thêm học viên mới">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Thêm học viên</span>
+        </button>
+      </div>
+
+      <!-- Sidebar Navigation Links -->
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">CHỨC NĂNG CHÍNH</div>
+        <button class="sidebar-link active" data-tab="tab-students">
+          <span class="sidebar-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </span>
+          <span class="sidebar-link-text">Học viên</span>
+          <span class="sidebar-badge" id="sidebar-badge-students">0</span>
+        </button>
+
+        <button class="sidebar-link" data-tab="tab-calendar">
+          <span class="sidebar-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="3" ry="3"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </span>
+          <span class="sidebar-link-text">Lịch tập & Âm lịch</span>
+        </button>
+
+        <button class="sidebar-link" data-tab="tab-revenue">
+          <span class="sidebar-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="3"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+          </span>
+          <span class="sidebar-link-text">Thu phí & Doanh thu</span>
+        </button>
+
+        <button class="sidebar-link" data-tab="tab-settings">
+          <span class="sidebar-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </span>
+          <span class="sidebar-link-text">Cài đặt hệ thống</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer (Sync Status) -->
+      <div class="sidebar-footer">
+        <div class="sync-indicator">
+          <span class="sync-dot" id="sync-dot"></span>
+          <span class="sync-label" id="sync-status-text">Bộ nhớ máy</span>
+        </div>
+        <button class="btn-sidebar-sync" id="btn-sync-now" title="Đồng bộ ngay">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ==================================================== -->
+    <!-- MAIN WORKSPACE                                       -->
+    <!-- ==================================================== -->
+    <div class="main-workspace">
+
+      <!-- MOBILE TOP NAV (Apple iOS Cupertino Bar) -->
+      <header class="mobile-top-bar">
+        <!-- Search Input & Sort Dropdown Pill in comfortable, spacious harmony -->
+        <div class="mobile-search-sort-row" id="mobile-search-sort-row">
+          <div class="mobile-search-bar">
+            <span class="search-svg-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
+            <input type="text" id="mobile-search-students" class="mobile-search-input" placeholder="Tìm tên, số điện thoại, lớp..." autocomplete="off">
+            <button type="button" class="btn-clear-mobile-search" id="btn-clear-mobile-search" aria-label="Xóa tìm kiếm" style="display: none;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Apple Cupertino Sort Trigger Pill -->
+          <div class="mobile-sort-pill" id="mobile-sort-pill" title="Sắp xếp danh sách">
+            <svg class="sort-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="6" x2="20" y2="6"></line>
+              <line x1="7" y1="12" x2="17" y2="12"></line>
+              <line x1="10" y1="18" x2="14" y2="18"></line>
+            </svg>
+            <span class="sort-label-text" id="mobile-sort-current-label">Hạn gần</span>
+            <svg class="chevron-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+            <!-- Native Select overlay for instant iOS / Android picker wheel -->
+            <select id="sort-students-select" class="apple-sort-native-select" aria-label="Sắp xếp danh sách">
+              <option value="expiry-asc" selected>Hạn: Gần nhất</option>
+              <option value="expiry-desc">Hạn: Xa nhất</option>
+              <option value="name-asc">Tên (A → Z)</option>
+              <option value="newest">Mới thêm</option>
+            </select>
+          </div>
+        </div>
+      </header>
+
+      <!-- DESKTOP TOP HEADER (Visible on screens >= 768px) -->
+      <header class="app-top-header">
+        <div class="header-titles">
+          <div class="header-breadcrumb">SUN YOGA STUDIO / QUẢN LÝ HỘI VIÊN</div>
+          <h1 class="header-page-title" id="navbar-page-title">Học viên Studio</h1>
+          <p class="header-page-sub">Danh bạ hội viên &amp; theo dõi thời hạn thẻ tập</p>
+        </div>
+
+        <div class="header-actions">
+          <!-- Desktop Search Input -->
+          <div class="header-search-box">
+            <span class="search-svg-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
+            <input type="text" id="search-students" class="header-search-input" placeholder="Tìm tên, số điện thoại, lớp tập...">
+          </div>
+
+          <!-- Desktop Sort Select -->
+          <div class="student-sort-control desktop-only-sort">
+            <select id="desktop-sort-students-select" class="apple-select-sm" aria-label="Sắp xếp hội viên">
+              <option value="expiry-asc">Hạn: Gần nhất</option>
+              <option value="expiry-desc">Hạn: Xa nhất</option>
+              <option value="name-asc">Tên (A → Z)</option>
+              <option value="newest">Mới đăng ký</option>
+            </select>
+          </div>
+
+          <!-- Desktop Primary Add Button -->
+          <button class="btn-primary-action" id="btn-desktop-add">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Thêm học viên</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENT SCROLL AREA -->
+      <main class="content-scroll-area">
+
+        <!-- ================================================= -->
+        <!-- TAB 1: DANH SÁCH HỌC VIÊN                        -->
+        <!-- ================================================= -->
+        <section class="tab-pane active" id="tab-students">
+
+          <!-- KHỐI 1: THE WELLNESS SUMMARY TRIAD (BỘ 3 THẺ TỔNG QUAN & BỘ LỌC TẬP TRUNG) -->
+          <div class="wellness-kpi-triad unified-metric-strip" role="tablist" aria-label="Bộ lọc & Thống kê học viên">
+            <!-- Card 1: Master Hero KPI Card (Tổng hội viên) -->
+            <button type="button" class="kpi-wellness-card hero-kpi-card metric-segment active" data-filter="all" role="tab" aria-selected="true" title="Xem tất cả học viên">
+              <div class="kpi-card-header">
+                <div class="kpi-icon-pill">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+                <div class="kpi-header-meta">
+                  <span class="kpi-title metric-segment-title">Tổng học viên</span>
+                </div>
+                <span class="kpi-pill-badge active-tag">Tất cả</span>
+              </div>
+              <div class="kpi-card-body">
+                <div class="kpi-stat-number metric-segment-number" id="metric-total-students">0</div>
+                <span id="count-all" style="display:none;">0</span>
+              </div>
+            </button>
+
+            <!-- Card 2: Attention Card (Sắp đến hạn) -->
+            <button type="button" class="kpi-wellness-card attention-kpi-card metric-segment" data-filter="expiring" role="tab" aria-selected="false" title="Lọc học viên sắp hết hạn">
+              <div class="kpi-card-header">
+                <div class="kpi-icon-pill">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <div class="kpi-header-meta">
+                  <span class="kpi-title metric-segment-title">Sắp đến hạn</span>
+                </div>
+                <span class="kpi-pill-badge">Nhắc phí</span>
+              </div>
+              <div class="kpi-card-body">
+                <div class="kpi-stat-number metric-segment-number" id="metric-expiring-students">0</div>
+                <span id="count-expiring" style="display:none;">0</span>
+              </div>
+            </button>
+
+            <!-- Card 3: Action Card (Quá hạn thẻ) -->
+            <button type="button" class="kpi-wellness-card action-kpi-card metric-segment" data-filter="overdue" role="tab" aria-selected="false" title="Lọc học viên quá hạn">
+              <div class="kpi-card-header">
+                <div class="kpi-icon-pill">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                    <line x1="2" y1="10" x2="22" y2="10"></line>
+                  </svg>
+                </div>
+                <div class="kpi-header-meta">
+                  <span class="kpi-title metric-segment-title">Quá hạn thẻ</span>
+                </div>
+                <span class="kpi-pill-badge">Cần thu</span>
+              </div>
+              <div class="kpi-card-body">
+                <div class="kpi-stat-number metric-segment-number" id="metric-overdue-students">0</div>
+                <span id="count-overdue" style="display:none;">0</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- KHỐI 2: KHỐI DANH BẠ HỌC VIÊN CAO CẤP (PREMIUM WELLNESS STUDENT DIRECTORY) -->
+          <div class="student-management-wrapper">
+            <!-- Directory Meta Bar -->
+            <div class="directory-top-meta-bar">
+              <div class="directory-meta-left">
+                <h3 class="directory-section-title">Danh bạ hội viên</h3>
+                <span class="directory-count-pill" id="student-visible-count">5 học viên</span>
+              </div>
+              <div class="directory-meta-right desktop-only-hint">
+                <span class="directory-hint-text">Nhấp vào dòng để xem hoặc cập nhật hồ sơ chi tiết</span>
+              </div>
+            </div>
+
+            <div class="wellness-student-directory unified-student-card">
+              <!-- Desktop Directory Header (Visible on Desktop >= 768px, hidden on mobile) -->
+              <div class="desktop-directory-header desktop-table-header" id="desktop-table-header" aria-hidden="true">
+                <div class="dir-th dir-th-info th-col th-col-info">HỘI VIÊN</div>
+                <div class="dir-th dir-th-phone th-col th-col-phone">ĐIỆN THOẠI</div>
+                <div class="dir-th dir-th-class th-col th-col-class">LỚP &amp; CA TẬP</div>
+                <div class="dir-th dir-th-package th-col th-col-package">GÓI TẬP</div>
+                <div class="dir-th dir-th-expiry th-col th-col-expiry">HẠN THẺ</div>
+                <div class="dir-th dir-th-status th-col th-col-status">TRẠNG THÁI</div>
+                <div class="dir-th dir-th-actions th-col th-col-actions">THAO TÁC</div>
+              </div>
+
+              <!-- Student Rows List Container -->
+              <div id="student-list-container" class="student-rows-container">
+                <!-- Rendered dynamically by app.js -->
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ================================================= -->
+        <!-- TAB 2: LỊCH TẬP & ÂM LỊCH                         -->
+        <!-- ================================================= -->
+        <section class="tab-pane" id="tab-calendar">
+          <div class="calendar-layout-grid">
+            <!-- Calendar Card -->
+            <div class="calendar-widget-card">
+              <div class="calendar-nav-bar">
+                <div>
+                  <h3 class="calendar-title-text" id="calendar-month-year-label">Tháng 10, 2026</h3>
+                  <div class="calendar-lunar-hint">Dương lịch & Âm lịch Việt Nam</div>
+                </div>
+                <div class="calendar-arrows">
+                  <button class="cal-arrow-btn" onclick="changeMonth(-1)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    <span>Trước</span>
+                  </button>
+                  <button class="cal-arrow-btn" onclick="changeMonth(1)">
+                    <span>Sau</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="calendar-days-grid" id="calendar-grid-container">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Today's Schedule Card -->
+            <div class="today-schedule-card">
+              <div class="schedule-card-header">
+                <h3>Ca tập hôm nay</h3>
+                <span class="schedule-date-tag">Hàng ngày</span>
+              </div>
+              <div class="schedule-list">
+                <div class="schedule-item">
+                  <div class="schedule-time-block">
+                    <span class="schedule-time">06:00</span>
+                    <span class="schedule-period">Sáng</span>
+                  </div>
+                  <div class="schedule-details">
+                    <div class="schedule-name">Lớp Sáng — Asana Cơ Bản</div>
+                    <div class="schedule-sub">06:00 - 07:15 • Giáo viên: Lan Hương</div>
+                  </div>
+                  <span class="status-pill active">Đang diễn ra</span>
+                </div>
+
+                <div class="schedule-item">
+                  <div class="schedule-time-block">
+                    <span class="schedule-time">11:45</span>
+                    <span class="schedule-period">Trưa</span>
+                  </div>
+                  <div class="schedule-details">
+                    <div class="schedule-name">Lớp Trưa — Hatha Yoga</div>
+                    <div class="schedule-sub">11:45 - 12:45 • Thư giãn & văn phòng</div>
+                  </div>
+                  <span class="status-pill subtle">11:45</span>
+                </div>
+
+                <div class="schedule-item">
+                  <div class="schedule-time-block">
+                    <span class="schedule-time">17:30</span>
+                    <span class="schedule-period">Chiều</span>
+                  </div>
+                  <div class="schedule-details">
+                    <div class="schedule-name">Lớp Chiều — Vinyasa Flow</div>
+                    <div class="schedule-sub">17:30 - 18:45 • Năng lượng & dẻo dai</div>
+                  </div>
+                  <span class="status-pill subtle">17:30</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================= -->
+        <!-- TAB 3: THU PHÍ & DOANH THU                        -->
+        <!-- ================================================= -->
+        <section class="tab-pane" id="tab-revenue">
+          <div class="revenue-layout-grid">
+            <!-- Hero Revenue Metric -->
+            <div class="revenue-hero-card">
+              <div class="revenue-card-top">
+                <span class="revenue-hero-label">Tổng học phí đã thu</span>
+                <button class="revenue-toggle-btn" id="btn-toggle-revenue" title="Ẩn/Hiện số tiền">
+                  <span class="revenue-eye-svg">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <div class="revenue-hero-amount" id="total-revenue-display">0 VND</div>
+              <div class="revenue-hero-sub">
+                <span class="status-dot-green"></span>
+                <span>Dữ liệu tính từ các khoản thu thực tế</span>
+              </div>
+            </div>
+
+            <!-- Payment Transactions List -->
+            <div class="payment-history-card">
+              <div class="history-card-header">
+                <h3>Lịch sử giao dịch học phí</h3>
+                <span class="history-count-badge" id="history-count">0 giao dịch</span>
+              </div>
+              <div class="payment-history-list" id="payment-history-list">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================= -->
+        <!-- TAB 4: CÀI ĐẶT & KẾT NỐI                          -->
+        <!-- ================================================= -->
+        <section class="tab-pane" id="tab-settings">
+
+          <!-- Interactive Lucian UX/UI Settings Dynamic Selector Menu (#037) -->
+          <div class="settings-dynamic-menu-container u037-settings-hub" id="settings-dynamic-menu-hub">
+            <div class="u037-settings-wrapper" id="u037-root">
+              <!-- Trigger Chip Button with Spring Motion -->
+              <button class="u037-trigger-chip" type="button" id="u037-menu-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="u037-dropdown-menu">
+                <span class="u037-trigger-icon" id="u037-current-icon" style="--c: linear-gradient(135deg, #107C41, #21A366);">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                </span>
+                <div class="u037-trigger-text">
+                  <span class="u037-trigger-eyebrow">CHỌN MỤC CÀI ĐẶT</span>
+                  <b id="u037-current-title">Google Sheet (Trang tính)</b>
+                  <small id="u037-current-sub">Đồng bộ tự động hai chiều học viên</small>
+                </div>
+                <div class="u037-trigger-badge-wrap">
+                  <span class="u037-menu-pill">Mở menu</span>
+                  <svg class="u037-chevron" viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </button>
+
+              <!-- Interactive Floating Glass Menu -->
+              <div class="u037-floating-menu" id="u037-dropdown-menu" role="menu" aria-label="Menu cài đặt hệ thống">
+                <div class="u037-menu-header">
+                  <span class="u037-menu-label">DANH MỤC THIẾT LẬP HỆ THỐNG</span>
+                  <span class="u037-menu-hint">Nhấp để mở bảng điều khiển</span>
+                </div>
+
+                <ul class="u037-items-list" id="u037-items-list">
+                  <!-- Highlight Floating Pill Slider -->
+                  <li class="u037-sliding-highlight" role="presentation" aria-hidden="true"></li>
+
+                  <!-- Menu Item 1: Google Sheet -->
+                  <li role="none">
+                    <button class="u037-menu-item active" type="button" role="menuitem" style="--i:0" 
+                            data-panel="settings-sync-card" 
+                            data-title="Google Sheet (Trang tính)" 
+                            data-sub="Đồng bộ tự động hai chiều học viên" 
+                            data-gradient="linear-gradient(135deg, #107C41, #21A366)"
+                            data-icon="sheet">
+                      <span class="u037-item-icon-box" style="--c: linear-gradient(135deg, #107C41, #21A366);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                      </span>
+                      <div class="u037-item-text">
+                        <span class="u037-item-name">Google Sheet</span>
+                        <small>Kết nối bảng tính & đồng bộ dữ liệu thời gian thực</small>
+                      </div>
+                      <svg class="u037-check-indicator" viewBox="0 0 18 18" aria-hidden="true">
+                        <path d="M4 9.5l3.5 3.5L14 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </li>
+
+                  <!-- Menu Item 2: Thông báo & Sao lưu dữ liệu -->
+                  <li role="none">
+                    <button class="u037-menu-item" type="button" role="menuitem" style="--i:1" 
+                            data-panel="settings-notif-card" 
+                            data-title="Thông báo & Dữ liệu" 
+                            data-sub="Cấp quyền thông báo & sao lưu JSON an toàn" 
+                            data-gradient="linear-gradient(135deg, #E65A00, #F7823B)"
+                            data-icon="bell">
+                      <span class="u037-item-icon-box" style="--c: linear-gradient(135deg, #E65A00, #F7823B);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                      </span>
+                      <div class="u037-item-text">
+                        <span class="u037-item-name">Thông báo & Dữ liệu</span>
+                        <small>Nhắc nhở học phí tự động & xuất / nạp file sao lưu</small>
+                      </div>
+                      <svg class="u037-check-indicator" viewBox="0 0 18 18" aria-hidden="true">
+                        <path d="M4 9.5l3.5 3.5L14 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </li>
+
+                  <!-- Menu Item 3: Cài đặt hình nền giao diện -->
+                  <li role="none">
+                    <button class="u037-menu-item" type="button" role="menuitem" style="--i:2" 
+                            data-panel="settings-wallpaper-card" 
+                            data-title="Hình nền giao diện" 
+                            data-sub="Bật tắt hình nền Studio, độ mờ & ảnh riêng" 
+                            data-gradient="linear-gradient(135deg, #8E44AD, #AF52DE)"
+                            data-icon="wallpaper">
+                      <span class="u037-item-icon-box" style="--c: linear-gradient(135deg, #8E44AD, #AF52DE);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="3" width="18" height="18" rx="3" ry="3"></rect>
+                          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                          <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                      </span>
+                      <div class="u037-item-text">
+                        <span class="u037-item-name">Cài đặt hình nền giao diện</span>
+                        <small>Tùy biến hình nền Studio, chỉnh độ trong suốt & tải ảnh mới</small>
+                      </div>
+                      <svg class="u037-check-indicator" viewBox="0 0 18 18" aria-hidden="true">
+                        <path d="M4 9.5l3.5 3.5L14 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </li>
+
+                  <!-- Menu Item 4: Quản lý Ca học -->
+                  <li role="none">
+                    <button class="u037-menu-item" type="button" role="menuitem" style="--i:3" 
+                            data-panel="settings-classes-card" 
+                            data-title="Quản lý Ca học & Lớp tập" 
+                            data-sub="Cấu hình tên lớp và khung thời gian" 
+                            data-gradient="linear-gradient(135deg, #0284C7, #38BDF8)"
+                            data-icon="class">
+                      <span class="u037-item-icon-box" style="--c: linear-gradient(135deg, #0284C7, #38BDF8);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                      </span>
+                      <div class="u037-item-text">
+                        <span class="u037-item-name">Ca học & Lớp tập</span>
+                        <small>Cấu hình danh sách ca sáng/chiều/tối của Studio</small>
+                      </div>
+                      <svg class="u037-check-indicator" viewBox="0 0 18 18" aria-hidden="true">
+                        <path d="M4 9.5l3.5 3.5L14 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </li>
+
+                  <!-- Menu Item 5: Quản lý Gói tập -->
+                  <li role="none">
+                    <button class="u037-menu-item" type="button" role="menuitem" style="--i:4" 
+                            data-panel="settings-packages-card" 
+                            data-title="Quản lý Gói tập & Học phí" 
+                            data-sub="Cấu hình thời hạn và số tiền mặc định" 
+                            data-gradient="linear-gradient(135deg, #4F46E5, #818CF8)"
+                            data-icon="package">
+                      <span class="u037-item-icon-box" style="--c: linear-gradient(135deg, #4F46E5, #818CF8);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                          <line x1="2" y1="10" x2="22" y2="10"></line>
+                        </svg>
+                      </span>
+                      <div class="u037-item-text">
+                        <span class="u037-item-name">Gói tập & Học phí</span>
+                        <small>Thiết lập thời lượng thẻ tập và biểu phí thu</small>
+                      </div>
+                      <svg class="u037-check-indicator" viewBox="0 0 18 18" aria-hidden="true">
+                        <path d="M4 9.5l3.5 3.5L14 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </li>
+
+                  <!-- Menu Item 6: May Bichon Mascot -->
+                  <li role="none">
+                    <button class="u037-menu-item" type="button" role="menuitem" style="--i:5" 
+                            data-panel="settings-mascot-card" 
+                            data-title="May Bichon Mascot" 
+                            data-sub="Cài đặt chú cún bông May đồng hành cùng Studio" 
+                            data-gradient="linear-gradient(135deg, #F59E0B, #D97706)"
+                            data-icon="mascot">
+                      <span class="u037-item-icon-box" style="--c: linear-gradient(135deg, #F59E0B, #D97706);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5"></path>
+                          <path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5"></path>
+                          <path d="M8 14v.5"></path>
+                          <path d="M16 14v.5"></path>
+                          <path d="M11.25 16.25h1.5L12 17l-.75-.75z"></path>
+                          <path d="M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444c0-1.061-.162-2.2-.493-3.309m-9.243-6.082A8.801 8.801 0 0 1 12 5c.78 0 1.5.108 2.161.306"></path>
+                        </svg>
+                      </span>
+                      <div class="u037-item-text">
+                        <span class="u037-item-name">May Bichon Mascot</span>
+                        <small>Đi dạo, thưởng bánh, bóng thoại & chọn yếm gấu</small>
+                      </div>
+                      <svg class="u037-check-indicator" viewBox="0 0 18 18" aria-hidden="true">
+                        <path d="M4 9.5l3.5 3.5L14 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-layout-grid" id="settings-panels-container">
+            <!-- Classes Management Card -->
+            <div class="settings-card settings-section-card settings-panel" id="settings-classes-card">
+              <div class="settings-card-header">
+                <div class="settings-card-icon icon-teal">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+                <div style="flex: 1;">
+                  <h3>Quản lý Ca học & Lớp tập</h3>
+                  <p class="settings-sub">Cấu hình tên lớp và khung thời gian diễn ra tại Studio</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <button type="button" class="btn-action-pill btn-pill-primary" onclick="showAddClassForm()">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Thêm ca</span>
+                  </button>
+
+                </div>
+              </div>
+
+              <div class="settings-card-body">
+                <!-- Inline Add / Edit Class Form -->
+                <div id="form-class-editor" class="inline-config-form" style="display: none;">
+                  <input type="hidden" id="input-edit-class-index" value="-1">
+                  <div class="config-form-row">
+                    <div class="config-form-col" style="flex: 1;">
+                      <label class="settings-input-label">Tên ca học & Khung giờ:</label>
+                      <input type="text" id="input-class-name" class="settings-input-field" placeholder="Ví dụ: Lớp Tối (19:00 - 20:15)">
+                    </div>
+                  </div>
+                  <div class="config-form-actions">
+                    <button type="button" class="btn-cancel-modal" style="height: 36px; font-size: 13px;" onclick="hideClassForm()">Hủy</button>
+                    <button type="button" class="settings-primary-btn" style="height: 36px; font-size: 13px;" onclick="saveClassConfig()">Lưu ca học</button>
+                  </div>
+                </div>
+
+                <!-- Classes List -->
+                <div class="config-items-list" id="settings-classes-list">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Packages Management Card -->
+            <div class="settings-card settings-section-card settings-panel" id="settings-packages-card">
+              <div class="settings-card-header">
+                <div class="settings-card-icon icon-blue">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="5" width="20" height="14" rx="3"></rect>
+                    <line x1="2" y1="10" x2="22" y2="10"></line>
+                  </svg>
+                </div>
+                <div style="flex: 1;">
+                  <h3>Quản lý Gói tập & Học phí</h3>
+                  <p class="settings-sub">Cấu hình thời hạn gói tập (tháng) và mức học phí thu mặc định</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <button type="button" class="btn-action-pill btn-pill-primary" onclick="showAddPackageForm()">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Thêm gói</span>
+                  </button>
+
+                </div>
+              </div>
+
+              <div class="settings-card-body">
+                <!-- Inline Add / Edit Package Form -->
+                <div id="form-package-editor" class="inline-config-form" style="display: none;">
+                  <input type="hidden" id="input-edit-package-index" value="-1">
+                  <div class="config-form-row">
+                    <div class="config-form-col" style="flex: 2;">
+                      <label class="settings-input-label">Tên gói tập:</label>
+                      <input type="text" id="input-pkg-name" class="settings-input-field" placeholder="Ví dụ: Gói 12 Tháng">
+                    </div>
+                    <div class="config-form-col" style="flex: 1;">
+                      <label class="settings-input-label">Thời hạn (Tháng):</label>
+                      <input type="number" id="input-pkg-duration" class="settings-input-field" min="1" max="60" placeholder="12">
+                    </div>
+                    <div class="config-form-col" style="flex: 1.5;">
+                      <label class="settings-input-label">Học phí (VND):</label>
+                      <input type="number" id="input-pkg-fee" class="settings-input-field" step="50000" placeholder="7500000">
+                    </div>
+                  </div>
+                  <div class="config-form-actions">
+                    <button type="button" class="btn-cancel-modal" style="height: 36px; font-size: 13px;" onclick="hidePackageForm()">Hủy</button>
+                    <button type="button" class="settings-primary-btn" style="height: 36px; font-size: 13px;" onclick="savePackageConfig()">Lưu gói tập</button>
+                  </div>
+                </div>
+
+                <!-- Packages List -->
+                <div class="config-items-list" id="settings-packages-list">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Google Sheet Sync Card -->
+            <div class="settings-card settings-section-card settings-panel active" id="settings-sync-card">
+              <div class="settings-card-header">
+                <div class="settings-card-icon icon-blue">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  </svg>
+                </div>
+                <div style="flex: 1;">
+                  <h3>Kết nối Google Sheet hai chiều</h3>
+                  <p class="settings-sub">Đồng bộ tự động dữ liệu học viên với trang tính Google</p>
+                </div>
+
+              </div>
+              <div class="settings-card-body">
+                <label class="settings-input-label">URL Web App (Google Apps Script):</label>
+                <input type="url" id="setting-sheet-url" class="settings-input-field" placeholder="https://script.google.com/macros/s/.../exec">
+                <button class="settings-primary-btn" onclick="saveGoogleSheetUrl()">Lưu & Kiểm tra kết nối</button>
+              </div>
+            </div>
+
+            <!-- Notifications & Backup Card -->
+            <div class="settings-card settings-section-card settings-panel" id="settings-notif-card">
+              <div class="settings-card-header">
+                <div class="settings-card-icon icon-orange">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  </svg>
+                </div>
+                <div style="flex: 1;">
+                  <h3>Thông báo & Sao lưu dữ liệu</h3>
+                  <p class="settings-sub">Cấp quyền thông báo học phí và sao lưu cơ sở dữ liệu an toàn</p>
+                </div>
+              </div>
+
+              <div class="settings-card-body">
+                <div class="settings-action-row" style="padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 16px;">
+                  <div>
+                    <strong style="display: block; font-size: 13.5px; color: var(--text-primary); margin-bottom: 2px;">Thông báo trên thiết bị</strong>
+                    <span style="font-size: 12px; color: var(--text-secondary);">Nhắc nhở tự động khi học viên sắp hết hạn</span>
+                  </div>
+                  <button class="btn-action-pill" onclick="requestNotificationPermission()">Cấp quyền</button>
+                </div>
+
+                <div class="settings-action-row" style="padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 16px;">
+                  <div>
+                    <strong style="display: block; font-size: 13.5px; color: var(--text-primary); margin-bottom: 2px;">Xuất file sao lưu (JSON)</strong>
+                    <span style="font-size: 12px; color: var(--text-secondary);">Tải toàn bộ danh sách học viên về máy tính/điện thoại</span>
+                  </div>
+                  <button class="btn-action-pill btn-pill-primary" onclick="exportDataBackup()">Tải sao lưu</button>
+                </div>
+
+                <div class="settings-action-row">
+                  <div>
+                    <strong style="display: block; font-size: 13.5px; color: var(--text-primary); margin-bottom: 2px;">Khôi phục dữ liệu</strong>
+                    <span style="font-size: 12px; color: var(--text-secondary);">Nạp lại dữ liệu từ file backup JSON đã lưu trước đó</span>
+                  </div>
+                  <input type="file" id="input-backup-file" accept=".json" style="display: none;" onchange="importDataBackup(event)">
+                  <button class="btn-action-pill" onclick="document.getElementById('input-backup-file').click()">Chọn file khôi phục</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Wallpaper & Theme Settings Card -->
+            <div class="settings-card settings-section-card settings-panel" id="settings-wallpaper-card">
+              <div class="settings-card-header">
+                <div class="settings-card-icon icon-purple">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="3" ry="3"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
+                <div style="flex: 1;">
+                  <h3>Cài đặt hình nền giao diện</h3>
+                  <p class="settings-sub">Tùy biến hình nền phòng tập Studio hoặc nền sáng phẳng Apple</p>
+                </div>
+              </div>
+
+              <div class="settings-card-body">
+                <!-- Toggle switch row -->
+                <div class="settings-action-row" style="padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 16px;">
+                  <div>
+                    <strong style="display: block; font-size: 14px; color: var(--text-primary); margin-bottom: 2px;">Bật hình nền Studio</strong>
+                    <span style="font-size: 12px; color: var(--text-secondary);">Hiển thị hình nền không gian phòng tập với hiệu ứng kính mờ Liquid Glass</span>
+                  </div>
+                  <label class="apple-switch" title="Bật/Tắt hình nền">
+                    <input type="checkbox" id="toggle-wallpaper-switch">
+                    <span class="apple-switch-slider"></span>
+                  </label>
+                </div>
+
+                <!-- Wallpaper controls body -->
+                <div id="wallpaper-controls-body" style="display: none;">
+                  <div class="wallpaper-preview-row">
+                    <div class="wallpaper-thumb-box">
+                      <img id="wallpaper-thumb-preview" src="./background.jpg" alt="Hình nền Studio">
+                      <span class="wallpaper-badge-type" id="wallpaper-type-badge">Mặc định</span>
+                    </div>
+                    <div class="wallpaper-thumb-actions">
+                      <input type="file" id="input-upload-wallpaper" accept="image/*" style="display: none;" onchange="handleWallpaperUpload(this)">
+                      <button type="button" class="btn-action-pill btn-upload-wp" onclick="document.getElementById('input-upload-wallpaper').click()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="17 8 12 3 7 8"></polyline>
+                          <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <span>Tải ảnh khác lên</span>
+                      </button>
+                      <button type="button" class="btn-action-pill" onclick="resetToDefaultWallpaper()" style="font-size: 12px; height: 32px;">
+                        Đặt lại ảnh mặc định
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Opacity / Overlay slider -->
+                  <div class="wallpaper-slider-group">
+                    <div class="wallpaper-slider-header">
+                      <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">Độ trong suốt lớp phủ mờ:</span>
+                      <span class="wallpaper-slider-value" id="wallpaper-opacity-text">85%</span>
+                    </div>
+                    <input type="range" class="apple-range-slider" id="wallpaper-opacity-range" min="40" max="95" value="85" oninput="handleWallpaperOpacitySlider(this.value)">
+                    <div class="wallpaper-slider-hints">
+                      <span>40% (Nhìn rõ ảnh)</span>
+                      <span>85% (Chuẩn Apple dịu mắt)</span>
+                      <span>95% (Rất mờ)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- May Mascot Card -->
+            <div class="settings-card settings-section-card settings-panel" id="settings-mascot-card">
+              <div class="settings-card-header">
+                <div class="settings-card-icon" style="background: rgba(245, 158, 11, 0.12); color: #D97706;">
+                  <span style="font-size: 20px;">🧸</span>
+                </div>
+                <div style="flex: 1;">
+                  <h3>May — Bichon Frise Mascot</h3>
+                  <p class="settings-sub">Chú cún trắng bông xù đeo yếm gấu đồng hành cùng Sun Yoga Studio</p>
+                </div>
+                <button type="button" class="btn-mascot-treat" id="btn-mascot-treat-quick" onclick="handleTreatMay()">
+                  <span>🦴 Thưởng bánh</span>
+                </button>
+              </div>
+
+              <div class="settings-card-body">
+                <div class="settings-action-row" style="padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 16px;">
+                  <div>
+                    <strong style="display: block; font-size: 14px; color: var(--text-primary); margin-bottom: 2px;">Cho May đi dạo</strong>
+                    <span style="font-size: 12px; color: var(--text-secondary);">May sẽ tung tăng dạo bước qua lại phía trên thanh điều hướng</span>
+                  </div>
+                  <label class="apple-switch" title="Bật/Tắt đi dạo">
+                    <input type="checkbox" id="toggle-mascot-roam" checked onchange="handleToggleMayRoam(this.checked)">
+                    <span class="apple-switch-slider"></span>
+                  </label>
+                </div>
+
+                <div class="settings-action-row" style="padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 16px;">
+                  <div>
+                    <strong style="display: block; font-size: 14px; color: var(--text-primary); margin-bottom: 2px;">Hiển thị lời thoại vui vẻ</strong>
+                    <span style="font-size: 12px; color: var(--text-secondary);">May sẽ gửi gắm những lời chúc an yên và thông báo lớp tập</span>
+                  </div>
+                  <label class="apple-switch" title="Bật/Tắt lời thoại">
+                    <input type="checkbox" id="toggle-mascot-bubble" checked onchange="handleToggleMayBubble(this.checked)">
+                    <span class="apple-switch-slider"></span>
+                  </label>
+                </div>
+
+                <div class="mascot-bib-section" style="padding-top: 4px;">
+                  <label style="display: block; font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 10px;">
+                    Mẫu Yếm Gấu của May (Theo ảnh mẫu):
+                  </label>
+                  <div class="mascot-bib-picker" id="mascot-bib-picker" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button type="button" class="bib-pill-btn active" data-bib="bear-bib" onclick="handleSelectMayBib('bear-bib')">
+                      🧸 Yếm Xanh Pastel (Theo mẫu)
+                    </button>
+                    <button type="button" class="bib-pill-btn" data-bib="terracotta" onclick="handleSelectMayBib('terracotta')">
+                      🧸 Yếm Cam Đất Sun Yoga
+                    </button>
+                    <button type="button" class="bib-pill-btn" data-bib="sage" onclick="handleSelectMayBib('sage')">
+                      🧸 Yếm Xanh Trà Dịu
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- ==================================================== -->
+    <!-- MAY: BICHON FRISE MASCOT COMPANION STAGE            -->
+    <!-- ==================================================== -->
+    <div class="may-mascot-dock-stage" id="may-mascot-dock-stage" aria-label="May Bichon Mascot">
+      <!-- Đường thảm yoga / cỏ mềm mờ ảo -->
+      <div class="may-walking-track"></div>
+
+      <!-- Dấu chân nhỏ xinh mờ ảo -->
+      <div class="may-paw-tracks" aria-hidden="true">
+        <span>🐾</span>
+        <span>🐾</span>
+        <span>🐾</span>
+      </div>
+
+      <!-- Chú cún May Bichon -->
+      <div class="may-mascot-runner" id="may-mascot-runner" role="button" tabindex="0" title="Chạm vào May để cưng nựng!" onclick="petMayMascot(event)">
+        <!-- Bong bóng lời thoại của May -->
+        <div class="may-speech-bubble" id="may-speech-bubble" aria-live="polite">
+          <span id="may-bubble-text">Gâu! May chào bạn 🐾☁️</span>
+        </div>
+
+        <!-- Khung chứa tim bay khi cưng nựng -->
+        <div class="may-hearts-emitter" id="may-hearts-emitter" aria-hidden="true"></div>
+
+        <!-- SVG Đồ họa May Bichon Trắng Bông Xù (Theo ảnh mẫu) -->
+        <div class="may-svg-avatar facing-right" id="may-svg-avatar">
+          <svg viewBox="0 0 130 112" fill="none" xmlns="http://www.w3.org/2000/svg" class="may-bichon-svg pose-walk" id="may-bichon-svg">
+            <defs>
+              <radialGradient id="bichonFluffGrad" cx="48%" cy="40%" r="58%">
+                <stop offset="0%" stop-color="#FFFFFF" />
+                <stop offset="72%" stop-color="#FFFDF9" />
+                <stop offset="100%" stop-color="#EFE7DC" />
+              </radialGradient>
+              <radialGradient id="bichonHeadGrad" cx="50%" cy="38%" r="55%">
+                <stop offset="0%" stop-color="#FFFFFF" />
+                <stop offset="78%" stop-color="#FFFDF9" />
+                <stop offset="100%" stop-color="#EDE4D8" />
+              </radialGradient>
+            </defs>
+
+            <!-- Bóng đổ êm dưới chân -->
+            <ellipse class="poodle-ground-shadow" cx="64" cy="101" rx="39" ry="6.5" fill="#D8CCBE" opacity="0.6" />
+
+            <!-- 1. CHIẾC ĐUÔI BÔNG XÙ CONG VỂNH LÊN LƯNG (Viền ấm sắc nét #9E8874) -->
+            <g class="poodle-tail-wag" style="transform-origin: 32px 54px;">
+              <path d="M34 54 C16 48, 11 26, 25 21 C33 18, 43 23, 42 35 C45 26, 53 32, 45 45 Z" fill="url(#bichonFluffGrad)" stroke="#9E8874" stroke-width="2.4" stroke-linejoin="round" />
+              <circle cx="23" cy="33" r="9.5" fill="#FFFFFF" stroke="#9E8874" stroke-width="2.2" />
+              <circle cx="31" cy="26" r="10" fill="#FFFFFF" stroke="#9E8874" stroke-width="2.2" />
+              <circle cx="39" cy="33" r="8.5" fill="#FFFDF9" stroke="#9E8874" stroke-width="2.0" />
+              <!-- Lõi che nét đè bên trong đuôi -->
+              <circle cx="31" cy="33" r="10.5" fill="#FFFDF9" />
+            </g>
+
+            <!-- 2. HAI CHÂN SAU NGẮN MŨM MĨM -->
+            <g class="poodle-leg-back-left" style="transform-origin: 34px 74px;">
+              <rect x="24" y="68" width="17" height="25" rx="8.5" fill="#F4EDE4" stroke="#9E8874" stroke-width="2.2" />
+              <ellipse cx="33" cy="92" rx="8.5" ry="5" fill="#FFFDF9" stroke="#9E8874" stroke-width="2.2" />
+            </g>
+
+            <g class="poodle-leg-front-right" style="transform-origin: 64px 74px;">
+              <rect x="56" y="70" width="16" height="23" rx="8" fill="#F4EDE4" stroke="#9E8874" stroke-width="2.2" />
+              <ellipse cx="64.5" cy="92" rx="8" ry="4.8" fill="#FFFDF9" stroke="#9E8874" stroke-width="2.2" />
+            </g>
+
+            <!-- 3. THÂN CÚN BICHON MAY (Cổ gọn gàng chuẩn form Bichon, không bị bờm xù sư tử) -->
+            <g class="poodle-body" style="transform-origin: 50px 65px;">
+              <path d="M22 65 C22 53, 30 46, 44 46 C56 46, 68 50, 76 60 C78 68, 76 78, 68 82 C56 86, 32 86, 25 78 C22 75, 22 70, 22 65 Z" fill="url(#bichonFluffGrad)" stroke="#9E8874" stroke-width="2.5" stroke-linejoin="round" />
+              <path d="M30 48 Q39 42 48 44 Q58 43 68 51" stroke="#9E8874" stroke-width="2.2" stroke-linecap="round" fill="none" />
+              <circle cx="34" cy="56" r="11" fill="#FFFFFF" />
+              <circle cx="49" cy="54" r="12" fill="#FFFFFF" />
+              <circle cx="33" cy="69" r="11" fill="#FFFDF9" />
+              <circle cx="48" cy="72" r="12" fill="#FFFDF9" />
+            </g>
+
+            <!-- 4. HAI CHÂN TRƯỚC NGẮN TRÒN MŨM MĨM -->
+            <g class="poodle-leg-back-right" style="transform-origin: 38px 75px;">
+              <rect x="28" y="69" width="18" height="27" rx="9" fill="url(#bichonFluffGrad)" stroke="#9E8874" stroke-width="2.3" />
+              <ellipse cx="37.5" cy="95" rx="8.5" ry="4.8" fill="#FFFFFF" stroke="#9E8874" stroke-width="2.2" />
+              <path d="M35 96.5 V98.5 M39.5 96.5 V98.5" stroke="#8E7764" stroke-width="1.8" stroke-linecap="round" />
+            </g>
+
+            <g class="poodle-leg-front-left" style="transform-origin: 69px 75px;">
+              <rect x="59" y="70" width="19" height="28" rx="9.5" fill="url(#bichonFluffGrad)" stroke="#9E8874" stroke-width="2.3" />
+              <ellipse cx="69" cy="96" rx="9" ry="5" fill="#FFFFFF" stroke="#9E8874" stroke-width="2.2" />
+              <path d="M66.5 97.5 V99.5 M71.5 97.5 V99.5" stroke="#8E7764" stroke-width="1.8" stroke-linecap="round" />
+            </g>
+
+            <!-- 5. YẾM VẢI XANH PASTEL & CHARM GẤU: Gọn gàng, rõ ràng trước ngực -->
+            <g class="may-bib-wrap" id="may-bib-container">
+              <path class="may-bib-outline" id="may-bib-outline" d="M63 56 C63 77, 91 77, 91 56 Z" fill="#FFFDF9" stroke="#7BA8BE" stroke-width="2.6" stroke-linejoin="round" />
+              <path d="M66 58 C66 73, 88 73, 88 58" fill="none" stroke="#A8CEE0" stroke-width="1.2" stroke-dasharray="2.5 1.8" />
+              <circle cx="73" cy="62.5" r="2.0" fill="#D9B391" stroke="#8C6D53" stroke-width="0.9" />
+              <circle cx="81" cy="62.5" r="2.0" fill="#D9B391" stroke="#8C6D53" stroke-width="0.9" />
+              <ellipse cx="77" cy="66" rx="4.5" ry="3.8" fill="#E3C1A0" stroke="#8C6D53" stroke-width="1.0" />
+              <circle cx="75.6" cy="65.3" r="0.7" fill="#3D352E" />
+              <circle cx="78.4" cy="65.3" r="0.7" fill="#3D352E" />
+              <ellipse cx="77" cy="67" rx="1.5" ry="1.0" fill="#FFFDF9" />
+              <circle cx="77" cy="66.7" r="0.6" fill="#3D352E" />
+            </g>
+
+            <!-- 6. ĐẦU CÚN BICHON BÔNG GÒN: Tròn xoe chuẩn form, cổ thanh thoát, không sư tử -->
+            <g class="poodle-head-tilt" style="transform-origin: 78px 42px;">
+              <!-- Tai tròn rủ hai bên má -->
+              <g class="poodle-ear-swing" style="transform-origin: 57px 34px;">
+                <circle cx="55" cy="38" r="9.5" fill="#FFFFFF" stroke="#9E8874" stroke-width="2.3" />
+                <circle cx="53.5" cy="40.5" r="6.5" fill="#FFFDF9" />
+              </g>
+              <g class="poodle-ear-swing" style="transform-origin: 97px 34px;">
+                <circle cx="101" cy="38" r="9.5" fill="#FFFFFF" stroke="#9E8874" stroke-width="2.3" />
+                <circle cx="102.5" cy="40.5" r="6.5" fill="#FFFDF9" />
+              </g>
+
+              <!-- Khối cầu lông chính tròn xinh -->
+              <circle cx="78" cy="38" r="22.5" fill="url(#bichonHeadGrad)" stroke="#9E8874" stroke-width="2.5" />
+
+              <!-- Múi bông viền phía trên & hai bên (bỏ các múi xù cổ rườm rà) -->
+              <circle cx="66" cy="22" r="9.5" fill="url(#bichonHeadGrad)" stroke="#9E8874" stroke-width="2.2" />
+              <circle cx="78" cy="19" r="10.5" fill="url(#bichonHeadGrad)" stroke="#9E8874" stroke-width="2.2" />
+              <circle cx="90" cy="22" r="9.5" fill="url(#bichonHeadGrad)" stroke="#9E8874" stroke-width="2.2" />
+              <circle cx="58" cy="31" r="9.5" fill="url(#bichonHeadGrad)" stroke="#9E8874" stroke-width="2.2" />
+              <circle cx="98" cy="31" r="9.5" fill="url(#bichonHeadGrad)" stroke="#9E8874" stroke-width="2.2" />
+
+              <!-- Lõi che giao thoa bên trong đầu -->
+              <circle cx="78" cy="38" r="19" fill="#FFFFFF" />
+
+              <!-- Má hồng phúng phính -->
+              <ellipse cx="66" cy="43.5" rx="4.5" ry="2.6" fill="#F4C7B8" opacity="0.8" />
+              <ellipse cx="90" cy="43.5" rx="4.5" ry="2.6" fill="#F4C7B8" opacity="0.8" />
+
+              <!-- Đôi mắt đen tròn xoe long lanh & chớp mắt -->
+              <g class="poodle-eyes-blink" style="transform-origin: 78px 37px;">
+                <circle cx="70" cy="37" r="3.6" fill="#201B17" />
+                <circle cx="68.8" cy="35.6" r="1.3" fill="#FFFFFF" />
+                <circle cx="71.2" cy="38.2" r="0.6" fill="#FFFFFF" opacity="0.75" />
+
+                <circle cx="86" cy="37" r="3.6" fill="#201B17" />
+                <circle cx="84.8" cy="35.6" r="1.3" fill="#FFFFFF" />
+                <circle cx="87.2" cy="38.2" r="0.6" fill="#FFFFFF" opacity="0.75" />
+              </g>
+
+              <!-- Khối mõm bông tròn trắng muốt có viền mềm -->
+              <ellipse cx="78" cy="44" rx="8.5" ry="6.2" fill="#FFFFFF" stroke="#B8A795" stroke-width="1.6" />
+
+              <!-- Chiếc mũi đen bóng nổi bật -->
+              <ellipse cx="78" cy="41.2" rx="4.0" ry="2.8" fill="#1C1714" />
+              <ellipse cx="76.9" cy="40.2" rx="1.3" ry="0.7" fill="#FFFFFF" opacity="0.85" />
+
+              <!-- Khuôn miệng chữ nhân (ω) -->
+              <path d="M78 44 L78 46 M74 47.2 Q76.2 45.8 78 46.4 Q79.8 45.8 82 47.2" stroke="#251F1B" stroke-width="1.8" stroke-linecap="round" fill="none" />
+              <ellipse cx="78" cy="47.8" rx="2.8" ry="1.0" fill="#8C7E72" opacity="0.3" />
+
+              <!-- Chiếc lưỡi hồng thè ra thở phì phò khi đi dạo một lát -->
+              <path class="may-happy-tongue" d="M76 46.5 C76 52.5, 80 52.5, 80 46.5 Z" fill="#FF8A80" stroke="#C25E5E" stroke-width="1.2" />
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lucian UX/UI #011 Radial Backdrop Overlay -->
+    <div class="u011-backdrop" id="u011-backdrop" aria-hidden="true"></div>
+
+    <!-- ==================================================== -->
+    <!-- LUCIAN UX/UI #208: CURSOR-MAGNIFIED APP DOCK NAVIGATION -->
+    <!-- (Floating Glass Navigation for Desktop & Mobile)     -->
+    <!-- ==================================================== -->
+    <nav class="u208-dock-nav" id="u208-app-dock" role="navigation" aria-label="Main navigation dock">
+      <div class="u208-dk" role="toolbar" aria-label="Sun Yoga navigation bar">
+        <!-- 1. Học viên -->
+        <button type="button" class="u208-a is-run" data-tab="tab-students" aria-label="Học viên" data-name="Học viên" title="Học viên">
+          <div class="u208-icon-art">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+        </button>
+
+        <!-- 2. Lịch tập -->
+        <button type="button" class="u208-a" data-tab="tab-calendar" aria-label="Lịch tập & Âm lịch" data-name="Lịch tập" title="Lịch tập">
+          <div class="u208-icon-art">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="3" ry="3"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </div>
+        </button>
+
+        <!-- 3. Thu phí -->
+        <button type="button" class="u208-a" data-tab="tab-revenue" aria-label="Thu phí & Doanh thu" data-name="Thu phí" title="Thu phí">
+          <div class="u208-icon-art">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="5" width="20" height="14" rx="3"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+          </div>
+        </button>
+
+        <!-- 4. Cài đặt -->
+        <button type="button" class="u208-a" data-tab="tab-settings" aria-label="Cài đặt hệ thống" data-name="Cài đặt" title="Cài đặt">
+          <div class="u208-icon-art">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </div>
+        </button>
+
+        <!-- Separator -->
+        <div class="u208-separator" role="separator"></div>
+
+        <!-- 5. LUCIAN UX/UI #011: RADIAL FLOATING ACTION BUTTON -->
+        <!-- Lucian UX/UI Prompt #011 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#011 -->
+        <div class="u011-dock-wrap ux u011" id="u011-dock-menu">
+          <span class="u011-halo" aria-hidden="true"></span>
+
+          <!-- Radial Action 1: Thêm học viên -->
+          <button class="u011-it" type="button" style="--i:0;--x:-20px;--y:-128px;--c:linear-gradient(140deg,#D98A6C,#B86B4E)" data-action="add-student" data-done="Đã mở thêm học viên" aria-label="Thêm học viên mới">
+            <i aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+              </svg>
+            </i>
+            <span>Học viên</span>
+          </button>
+
+          <!-- Radial Action 2: Thêm ca học -->
+          <button class="u011-it" type="button" style="--i:1;--x:-78px;--y:-96px;--c:linear-gradient(140deg,#119C72,#0E7C5B)" data-action="add-class" data-done="Đã mở thêm ca học" aria-label="Thêm ca học mới">
+            <i aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </i>
+            <span>Ca học</span>
+          </button>
+
+          <!-- Radial Action 3: Thêm gói học phí -->
+          <button class="u011-it" type="button" style="--i:2;--x:-120px;--y:-44px;--c:linear-gradient(140deg,#5B8CFF,#3D6BFF)" data-action="add-package" data-done="Đã mở thêm gói học phí" aria-label="Thêm gói học phí mới">
+            <i aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                <line x1="2" y1="10" x2="22" y2="10"></line>
+              </svg>
+            </i>
+            <span>Gói học phí</span>
+          </button>
+
+          <!-- Radial FAB Trigger Button inside Dock -->
+          <button type="button" class="u208-a u208-action-btn u011-fab" id="u208-btn-add" aria-expanded="false" aria-label="Thêm mới" data-name="Thêm mới" title="Thêm mới chức năng">
+            <div class="u208-icon-art">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </div>
+          </button>
+
+          <!-- Floating Result Note -->
+          <p class="u011-note" role="status"><i aria-hidden="true"></i><span></span></p>
+        </div>
+      </div>
+
+      <!-- Floating Nametag Tooltip -->
+      <div class="u208-tip" aria-hidden="true"></div>
+    </nav>
+
+    <!-- Legacy / Fallback iOS Bottom Tabs for Accessibility & Screen Readers -->
+    <nav class="ios-bottom-tabs" style="display: none;" aria-hidden="true">
+      <button class="tab-button active" data-tab="tab-students">
+        <span class="tab-glyph">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </span>
+        <span>Học viên</span>
+      </button>
+      <button class="tab-button" data-tab="tab-calendar">
+        <span class="tab-glyph">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="3" ry="3"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </span>
+        <span>Lịch tập</span>
+      </button>
+      <button class="tab-button" data-tab="tab-revenue">
+        <span class="tab-glyph">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="3"></rect>
+            <line x1="2" y1="10" x2="22" y2="10"></line>
+          </svg>
+        </span>
+        <span>Thu phí</span>
+      </button>
+      <button class="tab-button" data-tab="tab-settings">
+        <span class="tab-glyph">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </span>
+        <span>Cài đặt</span>
+      </button>
+    </nav>
+
+    <!-- ==================================================== -->
+    <!-- MODAL / SHEET (Dialog on Desktop, Sheet on Mobile)   -->
+    <!-- ==================================================== -->
+    <div class="sheet-backdrop-overlay" id="sheet-overlay" onclick="if(event.target===this) closeStudentSheet()">
+      <div class="cupertino-sheet-card">
+        <div class="sheet-drag-pill"></div>
+        <div class="sheet-header-row">
+          <h3 class="sheet-heading" id="sheet-title">Thêm học viên mới</h3>
+          <button type="button" class="sheet-close-btn" onclick="closeStudentSheet()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <form id="student-form">
+          <input type="hidden" id="input-student-id">
+
+          <div class="sheet-form-group">
+            <label class="sheet-form-label">Họ và tên học viên <span style="color: var(--apple-red);">*</span></label>
+            <input type="text" id="input-student-name" class="sheet-form-input" placeholder="Ví dụ: Nguyễn Thu Trang" required>
+          </div>
+
+          <div class="sheet-form-group">
+            <label class="sheet-form-label">Số điện thoại liên hệ</label>
+            <input type="tel" id="input-student-phone" class="sheet-form-input" placeholder="0912 345 678">
+          </div>
+
+          <div class="form-grid-row">
+            <div class="sheet-form-group">
+              <label class="sheet-form-label">Lớp học đăng ký</label>
+              <select id="input-student-class" class="sheet-form-select">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+
+            <div class="sheet-form-group">
+              <label class="sheet-form-label">Gói tập đăng ký</label>
+              <select id="input-student-package" class="sheet-form-select">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-row">
+            <div class="sheet-form-group">
+              <label class="sheet-form-label">Ngày vào lớp</label>
+              <input type="date" id="input-student-start-date" class="sheet-form-input">
+            </div>
+            <div class="sheet-form-group">
+              <label class="sheet-form-label">Ngày hết hạn</label>
+              <input type="date" id="input-student-expiry-date" class="sheet-form-input">
+            </div>
+          </div>
+
+          <div class="sheet-form-group">
+            <label class="sheet-form-label">Số tiền học phí đã thu (VND)</label>
+            <input type="number" id="input-student-fee" class="sheet-form-input" step="50000" placeholder="800000">
+          </div>
+
+          <div class="sheet-form-group">
+            <label class="sheet-form-label">Ghi chú</label>
+            <input type="text" id="input-student-notes" class="sheet-form-input" placeholder="Ví dụ: Đã nhận chuyển khoản">
+          </div>
+
+          <div class="modal-buttons-row">
+            <button type="button" class="btn-cancel-modal" onclick="closeStudentSheet()">Hủy</button>
+            <button type="submit" class="sheet-submit-button">Lưu học viên</button>
+          </div>
+          <button type="button" id="btn-delete-student" class="sheet-delete-button" style="display: none;">Xóa học viên này</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="./zen-canvas.js?v=9.2"></script>
+  <script src="./icons.js?v=9.2"></script>
+  <script src="./app.js?v=9.2"></script>
+</body>
+</html>

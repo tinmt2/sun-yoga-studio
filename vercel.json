@@ -1,0 +1,10 @@
+{
+  "outputDirectory": "mobile",
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
+  ]
+}
