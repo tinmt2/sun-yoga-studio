@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sun-yoga-warm-pastel-v31';
+const CACHE_NAME = 'sun-yoga-warm-pastel-v32';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

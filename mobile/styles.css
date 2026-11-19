@@ -199,42 +199,75 @@ body.theme-midnight-pro .filter-pill.active {
 }
 
 /* Studio Wallpaper Background & Liquid Glass Overlays */
-.app-wallpaper-layer {
+.app-wallpaper-layer,
+.app-wallpaper-overlay {
+  display: none;
   position: fixed;
   inset: 0;
+  pointer-events: none;
+}
+
+.app-wallpaper-layer {
   z-index: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
 }
 
 .app-wallpaper-overlay {
-  position: fixed;
-  inset: 0;
   z-index: 1;
-  background-color: rgba(247, 246, 242, 0.85);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease, background-color 0.3s ease;
+  background-color: rgba(247, 246, 242, 0.50);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  transition: background-color 0.3s ease;
 }
 
-body.has-custom-bg .apple-app-shell {
+@keyframes fadeInWallpaper {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+html.has-custom-bg,
+body.has-custom-bg,
+body.has-custom-bg .apple-app-shell,
+body.has-custom-bg .main-workspace,
+body.has-custom-bg .content-scroll-area,
+body.has-custom-bg .tab-pane {
   background-color: transparent !important;
 }
 
+body.has-custom-bg .app-wallpaper-layer {
+  display: block !important;
+  opacity: 1 !important;
+  animation: fadeInWallpaper 0.35s ease forwards;
+}
+
+body.has-custom-bg .app-wallpaper-overlay {
+  display: block !important;
+  opacity: 1 !important;
+  animation: fadeInWallpaper 0.35s ease forwards;
+}
+
 body.has-custom-bg .desktop-sidebar {
-  background: rgba(248, 247, 244, 0.75) !important;
+  background: rgba(248, 247, 244, 0.78) !important;
   backdrop-filter: blur(30px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
 }
 
 body.has-custom-bg .app-top-header {
-  background: rgba(255, 255, 255, 0.65) !important;
+  background: rgba(255, 255, 255, 0.70) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+}
+
+body.has-custom-bg .mobile-top-bar {
+  background: rgba(250, 246, 240, 0.82) !important;
+  backdrop-filter: blur(25px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+}
+
+body.has-custom-bg .u208-dock-nav {
+  background: rgba(250, 246, 240, 0.82) !important;
   backdrop-filter: blur(24px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
 }

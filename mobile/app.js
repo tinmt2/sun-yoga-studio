@@ -30,7 +30,7 @@ const state = {
     wallpaper: {
       enabled: false,
       image: 'default',
-      opacity: 85
+      opacity: 50
     }
   },
   currentMonth: new Date().getMonth(),
@@ -392,7 +392,7 @@ function bindUIEvents() {
   const toggleWp = document.getElementById('toggle-wallpaper-switch');
   if (toggleWp) {
     toggleWp.addEventListener('change', (e) => {
-      if (!state.settings.wallpaper) state.settings.wallpaper = { enabled: true, image: 'default', opacity: 85 };
+      if (!state.settings.wallpaper) state.settings.wallpaper = { enabled: true, image: 'default', opacity: 50 };
       state.settings.wallpaper.enabled = e.target.checked;
       saveLocalSettings();
       applyWallpaper();
@@ -2042,7 +2042,7 @@ function applyTheme() {
 
 // Apply Wallpaper to DOM (Liquid Glass Studio Wallpaper or Clean Apple Canvas)
 function applyWallpaper() {
-  const wp = state.settings.wallpaper || { enabled: false, image: 'default', opacity: 85 };
+  const wp = state.settings.wallpaper || { enabled: false, image: 'default', opacity: 50 };
   const layer = document.getElementById('app-wallpaper-layer');
   const overlay = document.getElementById('app-wallpaper-overlay');
   const toggle = document.getElementById('toggle-wallpaper-switch');
@@ -2052,26 +2052,30 @@ function applyWallpaper() {
   const thumbPreview = document.getElementById('wallpaper-thumb-preview');
   const badgeType = document.getElementById('wallpaper-type-badge');
 
+  const currentOpacity = (wp.opacity !== undefined && wp.opacity !== null) ? Number(wp.opacity) : 50;
+
   if (toggle) toggle.checked = !!wp.enabled;
   if (controls) controls.style.display = wp.enabled ? 'block' : 'none';
-  if (slider) slider.value = wp.opacity || 85;
-  if (opacityText) opacityText.textContent = (wp.opacity || 85) + '%';
+  if (slider) slider.value = currentOpacity;
+  if (opacityText) opacityText.textContent = currentOpacity + '%';
 
   const imgSrc = (wp.image && wp.image !== 'default') ? wp.image : './background.jpg';
   if (thumbPreview) thumbPreview.src = imgSrc;
   if (badgeType) badgeType.textContent = (wp.image && wp.image !== 'default') ? 'Tự tải lên' : 'Mặc định Studio';
 
   if (wp.enabled) {
+    document.documentElement.classList.add('has-custom-bg');
     document.body.classList.add('has-custom-bg');
     if (layer) {
       layer.style.backgroundImage = `url("${imgSrc}")`;
       layer.style.opacity = '1';
     }
     if (overlay) {
-      overlay.style.backgroundColor = `rgba(247, 246, 242, ${(wp.opacity || 85) / 100})`;
+      overlay.style.backgroundColor = `rgba(247, 246, 242, ${currentOpacity / 100})`;
       overlay.style.opacity = '1';
     }
   } else {
+    document.documentElement.classList.remove('has-custom-bg');
     document.body.classList.remove('has-custom-bg');
     if (layer) {
       layer.style.backgroundImage = 'none';
@@ -2085,7 +2089,7 @@ function applyWallpaper() {
 
 function handleWallpaperOpacitySlider(val) {
   if (!state.settings.wallpaper) {
-    state.settings.wallpaper = { enabled: true, image: 'default', opacity: 85 };
+    state.settings.wallpaper = { enabled: true, image: 'default', opacity: 50 };
   }
   state.settings.wallpaper.opacity = parseInt(val, 10);
   const opacityText = document.getElementById('wallpaper-opacity-text');
@@ -2109,7 +2113,7 @@ function handleWallpaperUpload(input) {
   const reader = new FileReader();
   reader.onload = function(e) {
     if (!state.settings.wallpaper) {
-      state.settings.wallpaper = { enabled: true, image: 'default', opacity: 85 };
+      state.settings.wallpaper = { enabled: true, image: 'default', opacity: 50 };
     }
     state.settings.wallpaper.image = e.target.result;
     state.settings.wallpaper.enabled = true;
@@ -2122,7 +2126,7 @@ function handleWallpaperUpload(input) {
 
 function resetToDefaultWallpaper() {
   if (!state.settings.wallpaper) {
-    state.settings.wallpaper = { enabled: true, image: 'default', opacity: 85 };
+    state.settings.wallpaper = { enabled: true, image: 'default', opacity: 50 };
   }
   state.settings.wallpaper.image = 'default';
   saveLocalSettings();
