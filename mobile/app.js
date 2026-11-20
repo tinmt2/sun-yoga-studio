@@ -430,7 +430,7 @@ function bindUIEvents() {
   // Bind Lucian UX/UI #011 Radial Floating Action Button
   initLucian011Radial();
 
-  // Initialize May Bichon Mascot Companion System
+  // Initialize Bơ Companion System
   initMayMascot();
 
   // Initialize Lucian UX/UI #228 Cursor-Lit Liquid Glass Edge Spotlight (Desktop pointer only)
@@ -884,17 +884,51 @@ function initLucian011Radial() {
 }
 
 // ============================================================================
-// BƠ: BROWN TOY POODLE MASCOT COMPANION SYSTEM
+// BƠ: COMPANION SYSTEM (WALK, PANT, REST & FRIENDLY QUOTES)
 // ============================================================================
-const MAY_QUOTES = [
+const BO_QUOTES = [
   'Gâu! Bơ chào bạn đến Sun Yoga 🐾🤎',
+  'Bơ chúc bạn một ngày thật an yên nhé ✨',
   'Hôm nay lớp Sáng & Chiều đông vui quá! 🧘‍♀️',
-  'Cún Poodle Bơ chúc bạn một ngày an yên ✨',
-  'Chạm vào Bơ để cưng nựng nhé! 🐾',
-  'Nhấn Thu phí để Bơ ghi sổ giúp nha! 🦴',
-  'Yếm gấu của Bơ có xinh không nè? 🧸',
   'Hít vào bình an, thở ra nhẹ nhõm nha! 🌿',
-  'Sun Yoga Studio ngập tràn năng lượng tích cực! ☀️'
+  'Nhớ uống chút nước ấm sau giờ tập nhé 🍵',
+  'Chạm vào Bơ để xoa đầu một cái nào! 🐾',
+  'Nhấn Thu phí để Bơ ghi sổ giúp nha! 🦴',
+  'Yếm gấu của Bơ hôm nay xinh không nè? 🧸',
+  'Bơ đang đi tuần tra thảm yoga nè 🐾✨',
+  'Thả lỏng đôi vai, mỉm cười thật tươi nhé 😊',
+  'Nắng đẹp quá, cùng Bơ hít thở sâu nào ☀️',
+  'Chúc lớp hôm nay dẻo dai, tràn năng lượng! 💛',
+  'Bơ ngoan lắm, luôn ở đây cùng bạn nha 🤎',
+  'Từng nhịp thở chậm giúp tâm trí nhẹ nhàng 🍃',
+  'Thu học phí gọn gàng, cả ngày thảnh thơi ✨',
+  'Sun Yoga Studio lúc nào cũng ấm áp quá! ☀️'
+];
+
+const BO_REST_QUOTES = [
+  'Đi dạo mỏi chân quá, Bơ nằm nghỉ xíu nha 💤',
+  'Cho Bơ tập tư thế Savasana chút nhé... khò khò 💤',
+  'Bơ hơi mệt rồi, nằm cuộn tròn nạp năng lượng đây 😴',
+  'Thảm êm quá, Bơ chợp mắt một lát nha 🐾💤',
+  'Đi một vòng rồi, Bơ nằm nghỉ xả hơi xíu nhé 🌿💤',
+  'Ngáp một cái thật dài... Bơ nằm thư giãn đây 😴✨'
+];
+
+const BO_PET_QUOTES = [
+  'Hi hi, thích quá! Xoa đầu Bơ nữa đi nha 🤎',
+  'Gâu gâu! Bơ thương bạn nhất luôn đó 🐾❤️',
+  'Vẫy đuôi tít mù nè! Bơ vui quá đi mất ✨',
+  'Bơ nhận được cái xoa đầu ấm áp rồi nè 🧸💛',
+  'Cảm ơn bạn đã cưng Bơ nha! Gâu gâu 🐾',
+  'Bơ ngoan nhất Sun Yoga phải không nào? 🤎✨',
+  'Hết mệt ngay lập tức luôn! Yêu bạn quá đi 🥰'
+];
+
+const BO_WAKE_QUOTES = [
+  'Bơ nghỉ đủ rồi, đi dạo tiếp thôi nào! 🐾☀️',
+  'Vươn vai một cái... Bơ đầy năng lượng lại rồi! ✨',
+  'Khỏe re rồi nè, Bơ lại tung tăng quanh lớp đây 🤎',
+  'Dậy thôi! Bơ đi xem hôm nay lớp có ai mới không 🐾'
 ];
 
 let mayState = {
@@ -909,9 +943,45 @@ let mayState = {
   maxX: 74,
   jumpTimeout: null,
   sitTimeout: null,
+  sleepTimeout: null,
   walkTicks: 0,
-  isPanting: false
+  fatigueTicks: 0,
+  restThresholdTicks: 185, // ~12s walking before Bơ gets tired and lies down
+  isPanting: false,
+  lastQuote: ''
 };
+
+function pickRandomBoQuote(list) {
+  if (!Array.isArray(list) || list.length === 0) return '';
+  if (list.length === 1) return list[0];
+  let choice = list[Math.floor(Math.random() * list.length)];
+  let tries = 0;
+  while (choice === mayState.lastQuote && tries < 5) {
+    choice = list[Math.floor(Math.random() * list.length)];
+    tries++;
+  }
+  mayState.lastQuote = choice;
+  return choice;
+}
+
+function triggerBoRest() {
+  clearTimeout(mayState.sitTimeout);
+  clearTimeout(mayState.jumpTimeout);
+  clearTimeout(mayState.sleepTimeout);
+
+  setMayPose('sleep');
+  setMayBubbleText(pickRandomBoQuote(BO_REST_QUOTES), 6000);
+
+  const restDurationMs = 8500 + Math.floor(Math.random() * 2500);
+  mayState.sleepTimeout = setTimeout(() => {
+    if (mayState.pose !== 'sleep' || !mayState.roam) return;
+    mayState.fatigueTicks = 0;
+    mayState.walkTicks = 0;
+    mayState.restThresholdTicks = 175 + Math.floor(Math.random() * 70);
+    setMayPose('walk');
+    setMayBubbleText(pickRandomBoQuote(BO_WAKE_QUOTES), 4200);
+  }, restDurationMs);
+}
 
 function initMayMascot() {
   const runner = document.getElementById('may-mascot-runner');
@@ -921,9 +991,11 @@ function initMayMascot() {
 
   // Set initial position
   runner.style.left = mayState.posX + '%';
+  runner.classList.toggle('near-right', mayState.posX >= 56);
+  runner.classList.toggle('near-left', mayState.posX <= 22);
   setMayBubbleText('Gâu! Bơ chào bạn 🐾🤎', 4500);
 
-  // 1. Walking Loop & Panting Cycle (Đi một lát đưa lưỡi ra thở phì phò)
+  // 1. Walking Loop, Panting & Tired-Rest Cycle
   setInterval(() => {
     if (!mayState.roam || mayState.pose === 'sleep' || mayState.pose === 'jump' || mayState.pose === 'sit') {
       if (mayState.isPanting) {
@@ -934,18 +1006,30 @@ function initMayMascot() {
     }
 
     mayState.walkTicks++;
-    // Sau khi đi ~3.2 giây (50 ticks x 65ms), cún May đưa lưỡi ra thở phì phò trong 2.6 giây (40 ticks)
-    if (mayState.walkTicks >= 50 && mayState.walkTicks < 90) {
+    mayState.fatigueTicks++;
+
+    // Bơ gets tired after walking for a while and gently lies down to rest
+    if (mayState.fatigueTicks >= mayState.restThresholdTicks) {
+      triggerBoRest();
+      return;
+    }
+
+    // Pant naturally mid-walk and right before getting tired (~3.5s warning cue)
+    const isNearTired = mayState.fatigueTicks >= mayState.restThresholdTicks - 55;
+    const isPeriodicPant = mayState.walkTicks >= 50 && mayState.walkTicks < 90;
+    if (isNearTired || isPeriodicPant) {
       if (!mayState.isPanting) {
         mayState.isPanting = true;
         if (svg) svg.classList.add('is-panting');
       }
-    } else if (mayState.walkTicks >= 90) {
+    } else {
       if (mayState.isPanting) {
         mayState.isPanting = false;
         if (svg) svg.classList.remove('is-panting');
       }
-      mayState.walkTicks = 0;
+      if (mayState.walkTicks >= 90) {
+        mayState.walkTicks = 0;
+      }
     }
 
     const step = mayState.facing === 'right' ? mayState.speed : -mayState.speed;
@@ -960,6 +1044,8 @@ function initMayMascot() {
     }
 
     runner.style.left = mayState.posX + '%';
+    runner.classList.toggle('near-right', mayState.posX >= 56);
+    runner.classList.toggle('near-left', mayState.posX <= 22);
     if (avatar) {
       avatar.classList.toggle('facing-left', mayState.facing === 'left');
       avatar.classList.toggle('facing-right', mayState.facing === 'right');
@@ -968,32 +1054,40 @@ function initMayMascot() {
 
   // 2. Spontaneous Natural Sitting & Tail Wagging
   setInterval(() => {
-    if (!mayState.roam || mayState.pose === 'sleep' || mayState.pose === 'jump') return;
-    if (Math.random() > 0.65) {
+    if (!mayState.roam || mayState.pose !== 'walk') return;
+    if (mayState.fatigueTicks >= mayState.restThresholdTicks - 45) return;
+    if (Math.random() > 0.72) {
       setMayPose('sit');
       clearTimeout(mayState.sitTimeout);
       mayState.sitTimeout = setTimeout(() => {
         if (mayState.pose === 'sit') {
           setMayPose('walk');
         }
-      }, 3500);
+      }, 3200);
     }
-  }, 7000);
+  }, 7500);
 
   // 3. Gentle Periodic Quote Refresh
   setInterval(() => {
     if (!mayState.bubble || mayState.pose === 'jump') return;
-    const randomQuote = MAY_QUOTES[Math.floor(Math.random() * MAY_QUOTES.length)];
-    setMayBubbleText(randomQuote);
-  }, 16000);
+    const pool = mayState.pose === 'sleep' ? BO_REST_QUOTES : BO_QUOTES;
+    setMayBubbleText(pickRandomBoQuote(pool), 4800);
+  }, 15000);
 }
 
 function setMayPose(pose) {
   mayState.pose = pose;
   const svg = document.getElementById('may-bichon-svg');
+  const runner = document.getElementById('may-mascot-runner');
   if (!svg) return;
   svg.classList.remove('pose-walk', 'pose-sit', 'pose-jump', 'pose-sleep');
   svg.classList.add('pose-' + pose);
+  if (runner) {
+    runner.classList.toggle('is-resting', pose === 'sleep');
+  }
+  if (pose !== 'sleep') {
+    clearTimeout(mayState.sleepTimeout);
+  }
   if (pose !== 'walk') {
     mayState.isPanting = false;
     mayState.walkTicks = 0;
@@ -1012,9 +1106,9 @@ function setMayBubbleText(text, autoHideMs = 4500) {
   }
   if (bubble) {
     bubble.classList.remove('is-hidden');
-    bubble.style.transform = 'translateX(-50%) scale(1.08)';
+    bubble.style.transform = 'translateX(var(--bubble-shift, -50%)) scale(1.06)';
     setTimeout(() => {
-      bubble.style.transform = 'translateX(-50%) scale(1)';
+      bubble.style.transform = '';
     }, 220);
 
     clearTimeout(bubbleHideTimer);
@@ -1043,17 +1137,24 @@ function emitMayHearts() {
   }
 }
 
-// Petting interaction
+// Petting interaction (also wakes Bơ happily if resting)
 function petMayMascot(e) {
   if (e) e.stopPropagation();
+  const wasSleeping = mayState.pose === 'sleep';
+  clearTimeout(mayState.sleepTimeout);
+  clearTimeout(mayState.sitTimeout);
+  mayState.fatigueTicks = 0;
+
   setMayPose('jump');
   clearTimeout(mayState.jumpTimeout);
   mayState.jumpTimeout = setTimeout(() => {
-    setMayPose(mayState.roam ? 'walk' : 'sit');
+    setMayPose(mayState.roam ? 'walk' : 'sleep');
   }, 1500);
 
-  const quote = MAY_QUOTES[Math.floor(Math.random() * MAY_QUOTES.length)];
-  setMayBubbleText(quote);
+  const quote = wasSleeping
+    ? 'Ơ, bạn gọi Bơ hả? Bơ dậy chơi liền nè 🐾🤎'
+    : pickRandomBoQuote(BO_PET_QUOTES);
+  setMayBubbleText(quote, 4500);
   emitMayHearts();
 
   if (e && typeof window.triggerZenRipple === 'function') {
@@ -1063,10 +1164,14 @@ function petMayMascot(e) {
 
 // Cheer when actions complete (fee collection, add student, etc.)
 window.mayCheer = function(type, name) {
+  clearTimeout(mayState.sleepTimeout);
+  clearTimeout(mayState.sitTimeout);
+  mayState.fatigueTicks = 0;
+
   setMayPose('jump');
   clearTimeout(mayState.jumpTimeout);
   mayState.jumpTimeout = setTimeout(() => {
-    setMayPose(mayState.roam ? 'walk' : 'sit');
+    setMayPose(mayState.roam ? 'walk' : 'sleep');
   }, 2400);
 
   if (type === 'fee') {
@@ -1080,6 +1185,9 @@ window.mayCheer = function(type, name) {
 // Mascot Settings Handlers
 function handleTreatMay() {
   mayState.roam = true;
+  mayState.fatigueTicks = 0;
+  clearTimeout(mayState.sleepTimeout);
+  clearTimeout(mayState.sitTimeout);
   const roamToggle = document.getElementById('toggle-mascot-roam');
   if (roamToggle) roamToggle.checked = true;
 
@@ -1089,19 +1197,24 @@ function handleTreatMay() {
     setMayPose('walk');
   }, 2000);
 
-  setMayBubbleText('Ngon quá! Cảm ơn bạn đã thưởng bánh cho Bơ nha 🦴✨');
+  setMayBubbleText('Ngon quá! Ăn bánh xong Bơ hết mệt liền luôn 🦴✨');
   emitMayHearts();
   showToast('🦴 Đã thưởng bánh cho Bơ!');
 }
 
 function handleToggleMayRoam(checked) {
   mayState.roam = Boolean(checked);
+  clearTimeout(mayState.sleepTimeout);
+  clearTimeout(mayState.sitTimeout);
   if (!mayState.roam) {
-    setMayPose('sit');
-    showToast('Bơ đang ngồi ngoan nghỉ ngơi 🧘‍♀️');
+    setMayPose('sleep');
+    setMayBubbleText(pickRandomBoQuote(BO_REST_QUOTES), 5000);
+    showToast('Bơ đang nằm nghỉ ngoan ngoãn 💤');
   } else {
+    mayState.fatigueTicks = 0;
     setMayPose('walk');
-    showToast('Bơ đã tiếp tục đi dạo quanh phòng tập 🐾');
+    setMayBubbleText(pickRandomBoQuote(BO_WAKE_QUOTES), 4000);
+    showToast('Bơ đã dậy đi dạo quanh phòng tập 🐾');
   }
 }
 
@@ -1132,10 +1245,12 @@ function handleSelectMayBib(bibType) {
     btn.classList.toggle('active', btn.getAttribute('data-bib') === bibType);
   });
 
+  clearTimeout(mayState.sleepTimeout);
+  mayState.fatigueTicks = 0;
   setMayPose('jump');
   clearTimeout(mayState.jumpTimeout);
   mayState.jumpTimeout = setTimeout(() => {
-    setMayPose(mayState.roam ? 'walk' : 'sit');
+    setMayPose(mayState.roam ? 'walk' : 'sleep');
   }, 1400);
 
   setMayBubbleText('Yếm mới của Bơ xinh quá nè! Cảm ơn bạn 🧸✨');

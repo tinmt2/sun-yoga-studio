@@ -6,7 +6,7 @@
   <title>Sun Yoga Studio — Quản Lý Học Viên</title>
   
   <!-- PWA & Apple Web App Meta Tags -->
-  <link rel="manifest" href="./manifest.json?v=10.2">
+  <link rel="manifest" href="./manifest.json?v=10.3">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png?v=1">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png?v=1">
   <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png?v=1">
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="./styles.css?v=10.2">
+  <link rel="stylesheet" href="./styles.css?v=10.3">
 </head>
 <body>
   <a href="#main-content" class="skip-to-content">Chuyển đến nội dung chính</a>
@@ -607,12 +607,12 @@
                     </button>
                   </li>
 
-                  <!-- Menu Item 6: Bơ Poodle Nâu Mascot -->
+                  <!-- Menu Item 6: Bơ -->
                   <li role="none">
                     <button class="u037-menu-item" type="button" role="menuitem" style="--i:5" 
                             data-panel="settings-mascot-card" 
-                            data-title="Bơ — Poodle Nâu Mascot" 
-                            data-sub="Cài đặt chú cún Poodle nâu Bơ đồng hành cùng Studio" 
+                            data-title="Bơ" 
+                            data-sub="Cài đặt Bơ — bạn nhỏ đồng hành cùng Studio" 
                             data-gradient="linear-gradient(135deg, #B87240, #8F5128)"
                             data-icon="mascot">
                       <span class="u037-item-icon-box" style="--c: linear-gradient(135deg, #B87240, #8F5128);">
@@ -626,8 +626,8 @@
                         </svg>
                       </span>
                       <div class="u037-item-text">
-                        <span class="u037-item-name">Bơ — Poodle Nâu Mascot</span>
-                        <small>Đi dạo, thưởng bánh, bóng thoại & chọn yếm cho Bơ</small>
+                        <span class="u037-item-name">Bơ</span>
+                        <small>Đi dạo, nằm nghỉ, thưởng bánh & chọn yếm cho Bơ</small>
                       </div>
                       <svg class="u037-check-indicator" viewBox="0 0 18 18" aria-hidden="true">
                         <path d="M4 9.5l3.5 3.5L14 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -878,15 +878,15 @@
               </div>
             </div>
 
-            <!-- Bơ Poodle Nâu Mascot Card -->
+            <!-- Bơ Companion Card -->
             <div class="settings-card settings-section-card settings-panel" id="settings-mascot-card">
               <div class="settings-card-header">
                 <div class="settings-card-icon" style="background: rgba(184, 114, 64, 0.16); color: #8F5128;">
-                  <span style="font-size: 20px;">🐩</span>
+                  <span style="font-size: 20px;">🐾</span>
                 </div>
                 <div style="flex: 1;">
-                  <h3>Bơ — Toy Poodle Nâu Mascot</h3>
-                  <p class="settings-sub">Chú cún Poodle lông xoăn màu nâu tên Bơ đồng hành cùng Sun Yoga Studio</p>
+                  <h3>Bơ</h3>
+                  <p class="settings-sub">Bạn nhỏ đồng hành thân thiện cùng Sun Yoga mỗi ngày</p>
                 </div>
                 <button type="button" class="btn-mascot-treat" id="btn-mascot-treat-quick" onclick="handleTreatMay()">
                   <span>🦴 Thưởng bánh</span>
@@ -897,7 +897,7 @@
                 <div class="settings-action-row" style="padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 16px;">
                   <div>
                     <strong style="display: block; font-size: 14px; color: var(--text-primary); margin-bottom: 2px;">Cho Bơ đi dạo</strong>
-                    <span style="font-size: 12px; color: var(--text-secondary);">Bơ sẽ tung tăng dạo bước qua lại phía trên thanh điều hướng</span>
+                    <span style="font-size: 12px; color: var(--text-secondary);">Bơ sẽ tung tăng dạo chơi và tự nằm nghỉ khi mỏi chân</span>
                   </div>
                   <label class="apple-switch" title="Bật/Tắt đi dạo">
                     <input type="checkbox" id="toggle-mascot-roam" checked onchange="handleToggleMayRoam(this.checked)">
@@ -941,9 +941,9 @@
     </div>
 
     <!-- ==================================================== -->
-    <!-- BƠ: BROWN TOY POODLE MASCOT COMPANION STAGE          -->
+    <!-- BƠ: COMPANION STAGE                                  -->
     <!-- ==================================================== -->
-    <div class="may-mascot-dock-stage" id="may-mascot-dock-stage" aria-label="Bơ — Poodle Nâu Mascot">
+    <div class="may-mascot-dock-stage" id="may-mascot-dock-stage" aria-label="Bơ">
       <!-- Đường thảm yoga / cỏ mềm mờ ảo -->
       <div class="may-walking-track"></div>
 
@@ -1103,6 +1103,12 @@
                 <circle cx="87.8" cy="38.8" r="0.65" fill="#FFFFFF" opacity="0.8" />
               </g>
 
+              <!-- Đôi mắt nhắm lim dim khi Bơ nằm nghỉ -->
+              <g class="poodle-eyes-sleep" aria-hidden="true">
+                <path d="M66 38 Q69.5 34.8 73 38" stroke="#23140D" stroke-width="2.1" stroke-linecap="round" fill="none" />
+                <path d="M83 38 Q86.5 34.8 90 38" stroke="#23140D" stroke-width="2.1" stroke-linecap="round" fill="none" />
+              </g>
+
               <!-- Khối mõm tròn màu nâu kem sáng nổi bật -->
               <ellipse cx="78" cy="45" rx="9" ry="6.5" fill="url(#poodleMuzzleGrad)" stroke="#7A4420" stroke-width="1.5" />
 
@@ -1115,6 +1121,12 @@
 
               <!-- Chiếc lưỡi hồng thè ra thở phì phò khi Bơ đi dạo -->
               <path class="may-happy-tongue" d="M76 47.2 C76 53.2, 80 53.2, 80 47.2 Z" fill="#FF8A80" stroke="#B8524A" stroke-width="1.2" />
+            </g>
+
+            <!-- Ký hiệu z Z bay nhẹ khi Bơ nằm nghỉ -->
+            <g class="poodle-sleep-zzz" aria-hidden="true">
+              <text class="zzz-1" x="95" y="30" fill="#7A4824" stroke="#FFFDF9" stroke-width="2.6" stroke-linejoin="round" style="paint-order: stroke;" font-size="11" font-weight="800" font-family="sans-serif">z</text>
+              <text class="zzz-2" x="106" y="19" fill="#9E5E32" stroke="#FFFDF9" stroke-width="2.8" stroke-linejoin="round" style="paint-order: stroke;" font-size="14" font-weight="800" font-family="sans-serif">Z</text>
             </g>
           </svg>
         </div>
@@ -1357,8 +1369,8 @@
 
   </div>
 
-  <script src="./zen-canvas.js?v=10.2"></script>
-  <script src="./icons.js?v=10.2"></script>
-  <script src="./app.js?v=10.2"></script>
+  <script src="./zen-canvas.js?v=10.3"></script>
+  <script src="./icons.js?v=10.3"></script>
+  <script src="./app.js?v=10.3"></script>
 </body>
 </html>

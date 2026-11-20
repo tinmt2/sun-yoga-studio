@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sun-yoga-pwa-v35';
+const CACHE_NAME = 'sun-yoga-pwa-v36';
 const ASSETS_TO_CACHE = [
   './',
   './styles.css',

@@ -5937,10 +5937,10 @@ body.theme-midnight-pro .u037-floating-menu {
 }
 
 /* ========================================================================== */
-/* MAY: BICHON FRISE MASCOT COMPANION SYSTEM (QUIET LUXURY & WARM PASTEL)     */
+/* BƠ: MASCOT COMPANION SYSTEM (QUIET LUXURY & WARM PASTEL)                   */
 /* ========================================================================== */
 
-/* Poodle / Bichon Frise Mascot Keyframes */
+/* Mascot Keyframes */
 @keyframes poodleWalkBob {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
   25% { transform: translateY(-2.5px) rotate(-1deg); }
@@ -5957,6 +5957,28 @@ body.theme-midnight-pro .u037-floating-menu {
 @keyframes poodleBreathe {
   0%, 100% { transform: scaleY(1) translateY(0px); }
   50% { transform: scaleY(1.025) translateY(-1px); }
+}
+
+@keyframes poodleSleepBody {
+  0%, 100% { transform: translateY(13px) scaleX(1.06) scaleY(0.92); }
+  50% { transform: translateY(14.2px) scaleX(1.08) scaleY(0.89); }
+}
+
+@keyframes poodleSleepHead {
+  0%, 100% { transform: translate(3px, 18.5px) rotate(6deg); }
+  50% { transform: translate(3px, 20px) rotate(8deg); }
+}
+
+@keyframes poodleSleepTail {
+  0%, 100% { transform: translate(-2px, 14px) rotate(-16deg); }
+  50% { transform: translate(-2px, 14px) rotate(-8deg); }
+}
+
+@keyframes boFloatZzz {
+  0% { opacity: 0; transform: translate(0px, 4px) scale(0.78); }
+  28% { opacity: 0.92; }
+  72% { opacity: 0.85; }
+  100% { opacity: 0; transform: translate(5px, -11px) scale(1.12); }
 }
 
 @keyframes poodleLegSwingA {
@@ -6055,12 +6077,46 @@ body.theme-midnight-pro .u037-floating-menu {
   display: block;
 }
 
+/* Smooth transitions when Bơ shifts between walking, sitting, and lying down */
+.may-bichon-svg .poodle-body,
+.may-bichon-svg .poodle-head-tilt,
+.may-bichon-svg .poodle-tail-wag,
+.may-bichon-svg .may-bib-wrap,
+.may-bichon-svg .poodle-leg-back-left,
+.may-bichon-svg .poodle-leg-back-right,
+.may-bichon-svg .poodle-leg-front-left,
+.may-bichon-svg .poodle-leg-front-right {
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.may-bichon-svg .may-bib-wrap {
+  transform-origin: 77px 66px;
+}
+
+.may-bichon-svg .poodle-ground-shadow {
+  transform-origin: 64px 102px;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.55s ease;
+}
+
+/* Closed sleeping eyes & floating Zzz (shown only in pose-sleep) */
+.poodle-eyes-sleep {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.poodle-sleep-zzz {
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: 103px 23px;
+  transition: opacity 0.35s ease;
+}
+
 /* Pose Animations */
 .may-bichon-svg.pose-walk .poodle-body { animation: poodleWalkBob 0.65s infinite ease-in-out; }
 .may-bichon-svg.pose-jump .poodle-body { animation: poodleHappyJump 0.55s infinite ease-in-out; }
 .may-bichon-svg.pose-jump .poodle-head-tilt { animation: poodleHappyJump 0.55s infinite ease-in-out; }
 .may-bichon-svg.pose-sit .poodle-body { animation: poodleBreathe 2.2s infinite ease-in-out; }
-.may-bichon-svg.pose-sleep .poodle-body { animation: poodleBreathe 3s infinite ease-in-out; }
 
 .may-bichon-svg.pose-walk .poodle-leg-front-left { animation: poodleLegSwingA 0.55s infinite ease-in-out; }
 .may-bichon-svg.pose-walk .poodle-leg-back-right { animation: poodleLegSwingB 0.55s infinite ease-in-out; }
@@ -6069,15 +6125,87 @@ body.theme-midnight-pro .u037-floating-menu {
 
 .may-bichon-svg.pose-sit .poodle-leg-back-left { transform: rotate(28deg) translate(3px, 3px); }
 .may-bichon-svg.pose-sit .poodle-leg-back-right { transform: rotate(18deg) translate(2px, 3px); }
-.may-bichon-svg.pose-sleep .poodle-leg-back-left { transform: rotate(55deg) translate(6px, 6px); }
-.may-bichon-svg.pose-sleep .poodle-leg-front-right { transform: rotate(-45deg) translate(-4px, 6px); }
-.may-bichon-svg.pose-sleep .poodle-leg-back-right { transform: rotate(50deg) translate(5px, 6px); }
-.may-bichon-svg.pose-sleep .poodle-leg-front-left { transform: rotate(-45deg) translate(-4px, 6px); }
 
 .may-bichon-svg .poodle-tail-wag { animation: poodleTailWag 0.32s infinite ease-in-out; }
 .may-bichon-svg .poodle-ear-swing { animation: poodleEarSwing 0.65s infinite ease-in-out; }
 .may-bichon-svg .poodle-head-tilt { animation: poodleHeadTilt 3.5s infinite ease-in-out; }
 .may-bichon-svg .poodle-eyes-blink { animation: poodleBlink 4s infinite ease-in-out; }
+
+/* Resting / Lying Down Pose (Bơ đi 1 lúc mệt sẽ nằm nghỉ thư giãn trên thảm) */
+.may-bichon-svg.pose-sleep .poodle-body {
+  transform: translateY(13px) scaleX(1.06) scaleY(0.92);
+  animation: poodleSleepBody 3.2s infinite ease-in-out;
+}
+
+.may-bichon-svg.pose-sleep .poodle-head-tilt {
+  transform: translate(3px, 18.5px) rotate(6deg);
+  animation: poodleSleepHead 3.2s infinite ease-in-out;
+}
+
+.may-bichon-svg.pose-sleep .may-bib-wrap {
+  transform: translate(1px, 15px) scaleY(0.88);
+}
+
+.may-bichon-svg.pose-sleep .poodle-tail-wag {
+  transform: translate(-2px, 14px) rotate(-14deg);
+  animation: poodleSleepTail 2.6s infinite ease-in-out;
+}
+
+.may-bichon-svg.pose-sleep .poodle-ear-swing {
+  animation: none;
+}
+
+.may-bichon-svg.pose-sleep .poodle-leg-back-left {
+  transform: translate(-3px, 16px) rotate(78deg);
+}
+
+.may-bichon-svg.pose-sleep .poodle-leg-back-right {
+  transform: translate(-2px, 16px) rotate(74deg);
+}
+
+.may-bichon-svg.pose-sleep .poodle-leg-front-right {
+  transform: translate(5px, 17px) rotate(-78deg);
+}
+
+.may-bichon-svg.pose-sleep .poodle-leg-front-left {
+  transform: translate(5px, 17px) rotate(-80deg);
+}
+
+.may-bichon-svg.pose-sleep .poodle-ground-shadow {
+  transform: scaleX(1.16) scaleY(1.12);
+  opacity: 0.64;
+}
+
+.may-bichon-svg.pose-sleep .poodle-eyes-blink {
+  opacity: 0 !important;
+  animation: none !important;
+}
+
+.may-bichon-svg.pose-sleep .poodle-eyes-sleep {
+  opacity: 1;
+}
+
+.may-bichon-svg.pose-sleep .may-happy-tongue {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+.may-bichon-svg.pose-sleep .poodle-sleep-zzz {
+  opacity: 1;
+  transform: translate(0px, 14px);
+}
+
+.may-svg-avatar.facing-left .may-bichon-svg.pose-sleep .poodle-sleep-zzz {
+  transform: translate(0px, 14px) scaleX(-1);
+}
+
+.may-bichon-svg.pose-sleep .poodle-sleep-zzz .zzz-1 {
+  animation: boFloatZzz 2.4s infinite ease-in-out;
+}
+
+.may-bichon-svg.pose-sleep .poodle-sleep-zzz .zzz-2 {
+  animation: boFloatZzz 2.4s 1.1s infinite ease-in-out;
+}
 
 /* Panting Tongue: Đi 1 lát đưa lưỡi ra thở phì phò cực đáng yêu */
 .may-happy-tongue {
@@ -6118,12 +6246,13 @@ body.theme-midnight-pro .u037-floating-menu {
 
 /* Speech Bubble (Liquid Porcelain Glass Pill) */
 .may-speech-bubble {
+  --bubble-shift: -50%;
   position: absolute;
   bottom: 72px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(var(--bubble-shift));
   white-space: nowrap;
-  background: rgba(255, 253, 249, 0.84);
+  background: rgba(255, 253, 249, 0.88);
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
   color: #322B25;
@@ -6136,10 +6265,22 @@ body.theme-midnight-pro .u037-floating-menu {
   pointer-events: none;
   z-index: 20;
   opacity: 1;
-  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.28s ease, bottom 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.may-mascot-runner.is-resting .may-speech-bubble {
+  bottom: 60px;
+}
+
+.may-mascot-runner.near-right .may-speech-bubble {
+  --bubble-shift: -78%;
+}
+
+.may-mascot-runner.near-left .may-speech-bubble {
+  --bubble-shift: -22%;
 }
 
 .may-speech-bubble::after {
@@ -6153,11 +6294,20 @@ body.theme-midnight-pro .u037-floating-menu {
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
   border-top: 5px solid #FFFDF9;
+  transition: left 0.25s ease;
+}
+
+.may-mascot-runner.near-right .may-speech-bubble::after {
+  left: 78%;
+}
+
+.may-mascot-runner.near-left .may-speech-bubble::after {
+  left: 22%;
 }
 
 .may-speech-bubble.is-hidden {
   opacity: 0 !important;
-  transform: translateX(-50%) translateY(5px) scale(0.92) !important;
+  transform: translateX(var(--bubble-shift)) translateY(5px) scale(0.92) !important;
   pointer-events: none;
 }
 
@@ -6295,5 +6445,26 @@ body.theme-midnight-pro .bib-pill-btn.active,
   background: #D98A6C;
   color: #FFF;
   border-color: #D98A6C;
+}
+
+body.theme-midnight-pro .poodle-sleep-zzz text,
+[data-theme="dark"] .poodle-sleep-zzz text {
+  fill: #F2C49B;
+  stroke: rgba(24, 24, 30, 0.92);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .may-bichon-svg .poodle-body,
+  .may-bichon-svg .poodle-head-tilt,
+  .may-bichon-svg .poodle-tail-wag,
+  .may-bichon-svg .poodle-ear-swing,
+  .may-bichon-svg .poodle-leg-front-left,
+  .may-bichon-svg .poodle-leg-front-right,
+  .may-bichon-svg .poodle-leg-back-left,
+  .may-bichon-svg .poodle-leg-back-right,
+  .may-bichon-svg .poodle-sleep-zzz .zzz-1,
+  .may-bichon-svg .poodle-sleep-zzz .zzz-2 {
+    animation: none !important;
+  }
 }
 
