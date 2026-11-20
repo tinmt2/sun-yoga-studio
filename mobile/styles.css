@@ -5981,6 +5981,38 @@ body.theme-midnight-pro .u037-floating-menu {
   100% { opacity: 0; transform: translate(5px, -11px) scale(1.12); }
 }
 
+@keyframes boRollOver {
+  0% { opacity: 0; transform: translateY(-5px) rotate(-18deg) scale(0.92); }
+  55% { opacity: 1; transform: translateY(2px) rotate(5deg) scale(1.03); }
+  100% { opacity: 1; transform: translateY(0px) rotate(0deg) scale(1); }
+}
+
+@keyframes boBellyWiggle {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  30% { transform: scale(1.04, 0.97) rotate(-4deg); }
+  65% { transform: scale(0.98, 1.03) rotate(4deg); }
+}
+
+@keyframes boBellyPawA {
+  0%, 100% { transform: rotate(-10deg) translateY(0px); }
+  50% { transform: rotate(10deg) translateY(-2px); }
+}
+
+@keyframes boBellyPawB {
+  0%, 100% { transform: rotate(10deg) translateY(-2px); }
+  50% { transform: rotate(-10deg) translateY(0px); }
+}
+
+@keyframes boBellyTailWag {
+  0%, 100% { transform: rotate(-14deg); }
+  50% { transform: rotate(18deg); }
+}
+
+@keyframes boBellyHeadBob {
+  0%, 100% { transform: rotate(-2deg) translateY(0px); }
+  50% { transform: rotate(4deg) translateY(-1.5px); }
+}
+
 @keyframes poodleLegSwingA {
   0%, 100% { transform: rotate(-18deg); }
   50% { transform: rotate(18deg); }
@@ -6207,6 +6239,63 @@ body.theme-midnight-pro .u037-floating-menu {
   animation: boFloatZzz 2.4s 1.1s infinite ease-in-out;
 }
 
+/* Belly-Up Pose (Khi chạm vào Bơ sẽ lăn ra nằm ngửa khoe bụng đòi gãi) */
+.poodle-normal-pose {
+  transition: opacity 0.22s ease;
+}
+
+.poodle-belly-pose {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.may-bichon-svg.pose-belly .poodle-normal-pose {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.may-bichon-svg.pose-belly .poodle-sleep-zzz {
+  opacity: 0 !important;
+}
+
+.may-bichon-svg.pose-belly .poodle-belly-pose {
+  opacity: 1;
+  visibility: visible;
+  animation: boRollOver 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.may-bichon-svg.pose-belly.is-belly-rubbed .poodle-belly-pose {
+  animation: boBellyWiggle 0.42s ease-in-out;
+}
+
+.may-bichon-svg.pose-belly .poodle-ground-shadow {
+  transform: scaleX(1.18) scaleY(1.1);
+  opacity: 0.62;
+}
+
+.may-bichon-svg.pose-belly .belly-paw-near-back,
+.may-bichon-svg.pose-belly .belly-paw-far-front {
+  animation: boBellyPawA 0.52s infinite ease-in-out;
+}
+
+.may-bichon-svg.pose-belly .belly-paw-near-front,
+.may-bichon-svg.pose-belly .belly-paw-far-back {
+  animation: boBellyPawB 0.52s infinite ease-in-out;
+}
+
+.may-bichon-svg.pose-belly .belly-tail-wag {
+  animation: boBellyTailWag 0.28s infinite ease-in-out;
+}
+
+.may-bichon-svg.pose-belly .belly-head-happy {
+  animation: boBellyHeadBob 0.85s infinite ease-in-out;
+}
+
+.may-bichon-svg.pose-belly .belly-happy-tongue {
+  animation: mayPantTongue 0.3s infinite alternate ease-in-out;
+}
+
 /* Panting Tongue: Đi 1 lát đưa lưỡi ra thở phì phò cực đáng yêu */
 .may-happy-tongue {
   display: none;
@@ -6271,7 +6360,8 @@ body.theme-midnight-pro .u037-floating-menu {
   gap: 4px;
 }
 
-.may-mascot-runner.is-resting .may-speech-bubble {
+.may-mascot-runner.is-resting .may-speech-bubble,
+.may-mascot-runner.is-belly-up .may-speech-bubble {
   bottom: 60px;
 }
 
@@ -6463,7 +6553,15 @@ body.theme-midnight-pro .poodle-sleep-zzz text,
   .may-bichon-svg .poodle-leg-back-left,
   .may-bichon-svg .poodle-leg-back-right,
   .may-bichon-svg .poodle-sleep-zzz .zzz-1,
-  .may-bichon-svg .poodle-sleep-zzz .zzz-2 {
+  .may-bichon-svg .poodle-sleep-zzz .zzz-2,
+  .may-bichon-svg.pose-belly .poodle-belly-pose,
+  .may-bichon-svg.pose-belly .belly-paw-near-back,
+  .may-bichon-svg.pose-belly .belly-paw-near-front,
+  .may-bichon-svg.pose-belly .belly-paw-far-back,
+  .may-bichon-svg.pose-belly .belly-paw-far-front,
+  .may-bichon-svg.pose-belly .belly-tail-wag,
+  .may-bichon-svg.pose-belly .belly-head-happy,
+  .may-bichon-svg.pose-belly .belly-happy-tongue {
     animation: none !important;
   }
 }

@@ -6,7 +6,7 @@
   <title>Sun Yoga Studio — Quản Lý Học Viên</title>
   
   <!-- PWA & Apple Web App Meta Tags -->
-  <link rel="manifest" href="./manifest.json?v=10.3">
+  <link rel="manifest" href="./manifest.json?v=10.4">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png?v=1">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png?v=1">
   <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png?v=1">
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="./styles.css?v=10.3">
+  <link rel="stylesheet" href="./styles.css?v=10.4">
 </head>
 <body>
   <a href="#main-content" class="skip-to-content">Chuyển đến nội dung chính</a>
@@ -954,8 +954,8 @@
         <span>🐾</span>
       </div>
 
-      <!-- Chú cún Poodle nâu Bơ -->
-      <div class="may-mascot-runner" id="may-mascot-runner" role="button" tabindex="0" title="Chạm vào Bơ để cưng nựng!" onclick="petMayMascot(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();petMayMascot(event);}">
+      <!-- Bơ companion runner -->
+      <div class="may-mascot-runner" id="may-mascot-runner" role="button" tabindex="0" title="Chạm vào Bơ để gãi bụng nhé!" onclick="petMayMascot(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();petMayMascot(event);}">
         <!-- Bong bóng lời thoại của Bơ -->
         <div class="may-speech-bubble" id="may-speech-bubble" aria-live="polite">
           <span id="may-bubble-text">Gâu! Bơ chào bạn 🐾🤎</span>
@@ -993,6 +993,8 @@
             <!-- Bóng đổ êm dưới chân -->
             <ellipse class="poodle-ground-shadow" cx="64" cy="102" rx="39" ry="6.2" fill="#BFA892" opacity="0.52" />
 
+            <!-- TƯ THẾ BÌNH THƯỜNG (ĐI DẠO / NGỒI / NHẢY / NẰM NGHỈ) -->
+            <g class="poodle-normal-pose">
             <!-- 1. ĐUÔI BÔNG XOĂN POM-POM ĐẶC TRƯNG POODLE -->
             <g class="poodle-tail-wag" style="transform-origin: 31px 55px;">
               <path d="M34 55 C24 52, 19 42, 24 33 L36 39 C38 45, 38 51, 34 55 Z" fill="#A65E30" stroke="#5B3318" stroke-width="2.2" stroke-linejoin="round" />
@@ -1122,6 +1124,103 @@
               <!-- Chiếc lưỡi hồng thè ra thở phì phò khi Bơ đi dạo -->
               <path class="may-happy-tongue" d="M76 47.2 C76 53.2, 80 53.2, 80 47.2 Z" fill="#FF8A80" stroke="#B8524A" stroke-width="1.2" />
             </g>
+            </g><!-- /poodle-normal-pose -->
+
+            <!-- TƯ THẾ NẰM NGỬA KHOE BỤNG KHI CHẠM VÀO BƠ -->
+            <g class="poodle-belly-pose" aria-hidden="true" style="transform-origin: 64px 82px;">
+              <!-- Đuôi bông pom-pom vẫy tít bên trái -->
+              <g class="belly-tail-wag" style="transform-origin: 26px 86px;">
+                <circle cx="14" cy="83.5" r="6.6" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.1" />
+                <circle cx="19" cy="77.5" r="7.0" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.1" />
+                <circle cx="21" cy="88" r="6.6" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.1" />
+                <circle cx="18.5" cy="83" r="7.2" fill="url(#poodleCoatGrad)" />
+              </g>
+
+              <!-- Hai chân xa giơ lên trời vung vẩy -->
+              <g class="belly-paw-far-back" style="transform-origin: 36px 76px;">
+                <rect x="26" y="51" width="13.5" height="25" rx="6.8" transform="rotate(-18 33 64)" fill="#A35D31" stroke="#5B3318" stroke-width="2.1" />
+                <ellipse cx="29" cy="52" rx="6.8" ry="4.5" transform="rotate(-18 29 52)" fill="#C97E49" stroke="#5B3318" stroke-width="2.0" />
+                <ellipse cx="29" cy="52.4" rx="2.2" ry="1.5" transform="rotate(-18 29 52.4)" fill="#E88F82" />
+              </g>
+
+              <g class="belly-paw-far-front" style="transform-origin: 65px 73px;">
+                <rect x="59" y="49" width="13" height="24" rx="6.5" transform="rotate(14 65 61)" fill="#A35D31" stroke="#5B3318" stroke-width="2.1" />
+                <ellipse cx="67.5" cy="50" rx="6.8" ry="4.4" transform="rotate(14 67.5 50)" fill="#C97E49" stroke="#5B3318" stroke-width="2.0" />
+                <ellipse cx="67.5" cy="50.4" rx="2.2" ry="1.5" transform="rotate(14 67.5 50.4)" fill="#E88F82" />
+              </g>
+
+              <!-- Thân lông xoăn nằm ngửa êm ái trên thảm + bụng kem mềm mịn -->
+              <g class="belly-torso">
+                <ellipse cx="53" cy="83.5" rx="28.5" ry="15" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.4" />
+                <circle cx="29" cy="86" r="8" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.0" />
+                <circle cx="40" cy="91.5" r="8.2" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.0" />
+                <circle cx="53" cy="92.5" r="8.5" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.0" />
+                <circle cx="66" cy="91" r="8.2" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.0" />
+                <circle cx="76" cy="85.5" r="7.8" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.0" />
+                <circle cx="31" cy="76" r="7.5" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.0" />
+                <circle cx="73" cy="75" r="7.5" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.0" />
+                <!-- Lõi thân mịn -->
+                <ellipse cx="53" cy="83.5" rx="25.5" ry="13.5" fill="url(#poodleCoatGrad)" />
+                <!-- Chiếc bụng nâu kem tròn mịn ngửa lên trời đòi gãi bụng -->
+                <ellipse cx="52" cy="77.5" rx="16.5" ry="8.8" fill="url(#poodleMuzzleGrad)" opacity="0.94" />
+                <path d="M44 77.5 Q47.5 74.5 51 77.5 M53.5 78.5 Q57 75.5 60.5 78.5" stroke="#B67647" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.58" />
+                <!-- Yếm nhỏ ôm cổ Bơ -->
+                <path id="may-bib-outline-belly" d="M72 72.5 C67.5 77.5, 67.5 87, 73 91 C78.5 88, 80.5 78.5, 77 72.5 Z" fill="#FFFDF7" stroke="#7BA8BE" stroke-width="2.2" stroke-linejoin="round" />
+              </g>
+
+              <!-- Hai chân gần mũm mĩm chĩa lên trời lộ đệm chân hồng -->
+              <g class="belly-paw-near-back" style="transform-origin: 41px 81px;">
+                <rect x="33" y="54" width="14.5" height="27" rx="7.2" transform="rotate(-10 40 68)" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.2" />
+                <ellipse cx="38.5" cy="54.5" rx="7.4" ry="4.8" transform="rotate(-10 38.5 54.5)" fill="#D9935F" stroke="#5B3318" stroke-width="2.0" />
+                <ellipse cx="38.5" cy="55.3" rx="2.5" ry="1.8" transform="rotate(-10 38.5 55.3)" fill="#E88F82" />
+                <circle cx="35.6" cy="53.3" r="1.05" fill="#E88F82" />
+                <circle cx="38.2" cy="52.4" r="1.05" fill="#E88F82" />
+                <circle cx="40.9" cy="52.8" r="1.05" fill="#E88F82" />
+              </g>
+
+              <g class="belly-paw-near-front" style="transform-origin: 69px 80px;">
+                <rect x="61.5" y="53" width="14.5" height="26.5" rx="7.2" transform="rotate(10 69 66)" fill="url(#poodleCoatGrad)" stroke="#5B3318" stroke-width="2.2" />
+                <ellipse cx="70.5" cy="53.5" rx="7.4" ry="4.8" transform="rotate(10 70.5 53.5)" fill="#D9935F" stroke="#5B3318" stroke-width="2.0" />
+                <ellipse cx="70.5" cy="54.3" rx="2.5" ry="1.8" transform="rotate(10 70.5 54.3)" fill="#E88F82" />
+                <circle cx="67.8" cy="52.2" r="1.05" fill="#E88F82" />
+                <circle cx="70.5" cy="51.4" r="1.05" fill="#E88F82" />
+                <circle cx="73.2" cy="52.3" r="1.05" fill="#E88F82" />
+              </g>
+
+              <!-- Đầu tròn xoăn ngửa ra vui vẻ, mắt cười tít & lưỡi hồng -->
+              <g class="belly-head-happy" style="transform-origin: 94px 77px;">
+                <g transform="rotate(20 94 75)">
+                  <!-- Đôi tai rủ xoăn xòe mềm trên thảm -->
+                  <path d="M77 67 C67 70, 65 81, 69 89 C72 93.5, 78 93, 80 87 C81 82, 80 74, 78 68 Z" fill="url(#poodleEarGrad)" stroke="#5B3318" stroke-width="2.2" stroke-linejoin="round" />
+                  <path d="M111 67 C121 70, 123 81, 119 89 C116 93.5, 110 93, 108 87 C107 82, 108 74, 110 68 Z" fill="url(#poodleEarGrad)" stroke="#5B3318" stroke-width="2.2" stroke-linejoin="round" />
+
+                  <!-- Khối đầu tròn teddy -->
+                  <circle cx="94" cy="75" r="18.5" fill="url(#poodleHeadGrad)" stroke="#5B3318" stroke-width="2.3" />
+                  <circle cx="82" cy="61.5" r="7.4" fill="url(#poodleHeadGrad)" stroke="#5B3318" stroke-width="2.0" />
+                  <circle cx="90" cy="57" r="8.0" fill="url(#poodleHeadGrad)" stroke="#5B3318" stroke-width="2.0" />
+                  <circle cx="99" cy="57" r="8.0" fill="url(#poodleHeadGrad)" stroke="#5B3318" stroke-width="2.0" />
+                  <circle cx="106.5" cy="61.5" r="7.4" fill="url(#poodleHeadGrad)" stroke="#5B3318" stroke-width="2.0" />
+                  <circle cx="77.5" cy="70" r="6.8" fill="url(#poodleHeadGrad)" stroke="#5B3318" stroke-width="2.0" />
+                  <circle cx="110.5" cy="70" r="6.8" fill="url(#poodleHeadGrad)" stroke="#5B3318" stroke-width="2.0" />
+                  <circle cx="94" cy="74.5" r="17.2" fill="url(#poodleHeadGrad)" />
+
+                  <!-- Má hồng ửng lên vì khoái chí -->
+                  <ellipse cx="81.5" cy="79.5" rx="4.4" ry="2.6" fill="#F29580" opacity="0.82" />
+                  <ellipse cx="106.5" cy="79.5" rx="4.4" ry="2.6" fill="#F29580" opacity="0.82" />
+
+                  <!-- Đôi mắt cười híp ^ ^ siêu hạnh phúc -->
+                  <path d="M83 74.5 Q86.2 70.5 89.4 74.5" stroke="#23140D" stroke-width="2.2" stroke-linecap="round" fill="none" />
+                  <path d="M98.6 74.5 Q101.8 70.5 105 74.5" stroke="#23140D" stroke-width="2.2" stroke-linecap="round" fill="none" />
+
+                  <!-- Mõm kem, mũi bóng & lưỡi hồng vui vẻ -->
+                  <ellipse cx="94" cy="80.5" rx="8.2" ry="5.9" fill="url(#poodleMuzzleGrad)" stroke="#7A4420" stroke-width="1.4" />
+                  <ellipse cx="94" cy="77.8" rx="3.7" ry="2.6" fill="#23140D" />
+                  <ellipse cx="93" cy="76.9" rx="1.2" ry="0.65" fill="#FFFFFF" opacity="0.85" />
+                  <path d="M94 80.2 L94 82 M90.4 83 Q92.4 81.7 94 82.4 Q95.6 81.7 97.6 83" stroke="#2D1A10" stroke-width="1.7" stroke-linecap="round" fill="none" />
+                  <path class="belly-happy-tongue" d="M92.1 82.6 C92.1 88.4, 95.9 88.4, 95.9 82.6 Z" fill="#FF8A80" stroke="#B8524A" stroke-width="1.15" style="transform-origin: 94px 82.5px;" />
+                </g>
+              </g>
+            </g><!-- /poodle-belly-pose -->
 
             <!-- Ký hiệu z Z bay nhẹ khi Bơ nằm nghỉ -->
             <g class="poodle-sleep-zzz" aria-hidden="true">
@@ -1369,8 +1468,8 @@
 
   </div>
 
-  <script src="./zen-canvas.js?v=10.3"></script>
-  <script src="./icons.js?v=10.3"></script>
-  <script src="./app.js?v=10.3"></script>
+  <script src="./zen-canvas.js?v=10.4"></script>
+  <script src="./icons.js?v=10.4"></script>
+  <script src="./app.js?v=10.4"></script>
 </body>
 </html>

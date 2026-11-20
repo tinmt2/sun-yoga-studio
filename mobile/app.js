@@ -915,13 +915,13 @@ const BO_REST_QUOTES = [
 ];
 
 const BO_PET_QUOTES = [
-  'Hi hi, thích quá! Xoa đầu Bơ nữa đi nha 🤎',
-  'Gâu gâu! Bơ thương bạn nhất luôn đó 🐾❤️',
-  'Vẫy đuôi tít mù nè! Bơ vui quá đi mất ✨',
-  'Bơ nhận được cái xoa đầu ấm áp rồi nè 🧸💛',
-  'Cảm ơn bạn đã cưng Bơ nha! Gâu gâu 🐾',
-  'Bơ ngoan nhất Sun Yoga phải không nào? 🤎✨',
-  'Hết mệt ngay lập tức luôn! Yêu bạn quá đi 🥰'
+  'Á a, gãi bụng cho Bơ đi mà! 🐾🤎',
+  'Hi hi, nhột bụng Bơ quá nè! Gãi nữa đi 🥰',
+  'Bơ nằm ngửa khoe bụng mềm cho bạn xoa nè 🧸✨',
+  'Thích quá đi mất! Xoa bụng Bơ thêm chút nữa nha 🤎',
+  'Gâu gâu! Bơ đầu hàng rồi, cưng Bơ đi nào 🐾❤️',
+  'Bụng Bơ mềm mịn lắm, xoa nhẹ tay nha hi hi ✨',
+  'Vẫy đuôi tít mù luôn! Bơ thương bạn nhất đó 💛'
 ];
 
 const BO_WAKE_QUOTES = [
@@ -934,7 +934,7 @@ const BO_WAKE_QUOTES = [
 let mayState = {
   roam: true,
   bubble: true,
-  pose: 'walk', // 'walk' | 'sit' | 'jump' | 'sleep'
+  pose: 'walk', // 'walk' | 'sit' | 'jump' | 'sleep' | 'belly'
   bib: 'bear-bib', // 'bear-bib' | 'terracotta' | 'sage'
   facing: 'right', // 'right' | 'left'
   posX: 25, // %
@@ -944,6 +944,7 @@ let mayState = {
   jumpTimeout: null,
   sitTimeout: null,
   sleepTimeout: null,
+  bellyTimeout: null,
   walkTicks: 0,
   fatigueTicks: 0,
   restThresholdTicks: 185, // ~12s walking before Bơ gets tired and lies down
@@ -997,7 +998,7 @@ function initMayMascot() {
 
   // 1. Walking Loop, Panting & Tired-Rest Cycle
   setInterval(() => {
-    if (!mayState.roam || mayState.pose === 'sleep' || mayState.pose === 'jump' || mayState.pose === 'sit') {
+    if (!mayState.roam || mayState.pose !== 'walk') {
       if (mayState.isPanting) {
         mayState.isPanting = false;
         if (svg) svg.classList.remove('is-panting');
@@ -1069,7 +1070,7 @@ function initMayMascot() {
 
   // 3. Gentle Periodic Quote Refresh
   setInterval(() => {
-    if (!mayState.bubble || mayState.pose === 'jump') return;
+    if (!mayState.bubble || mayState.pose === 'jump' || mayState.pose === 'belly') return;
     const pool = mayState.pose === 'sleep' ? BO_REST_QUOTES : BO_QUOTES;
     setMayBubbleText(pickRandomBoQuote(pool), 4800);
   }, 15000);
@@ -1080,13 +1081,17 @@ function setMayPose(pose) {
   const svg = document.getElementById('may-bichon-svg');
   const runner = document.getElementById('may-mascot-runner');
   if (!svg) return;
-  svg.classList.remove('pose-walk', 'pose-sit', 'pose-jump', 'pose-sleep');
+  svg.classList.remove('pose-walk', 'pose-sit', 'pose-jump', 'pose-sleep', 'pose-belly', 'is-belly-rubbed');
   svg.classList.add('pose-' + pose);
   if (runner) {
     runner.classList.toggle('is-resting', pose === 'sleep');
+    runner.classList.toggle('is-belly-up', pose === 'belly');
   }
   if (pose !== 'sleep') {
     clearTimeout(mayState.sleepTimeout);
+  }
+  if (pose !== 'belly') {
+    clearTimeout(mayState.bellyTimeout);
   }
   if (pose !== 'walk') {
     mayState.isPanting = false;
@@ -1120,42 +1125,56 @@ function setMayBubbleText(text, autoHideMs = 4500) {
   }
 }
 
-function emitMayHearts() {
+function emitMayHearts(count = 2) {
   const emitter = document.getElementById('may-hearts-emitter');
   if (!emitter) return;
   const particles = ['❤️', '✨', '🐾', '☁️'];
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < count; i++) {
     const p = document.createElement('span');
     p.className = 'may-heart-particle';
     p.textContent = particles[Math.floor(Math.random() * particles.length)];
-    p.style.left = (40 + Math.random() * 20) + '%';
-    p.style.animationDelay = (i * 0.15) + 's';
+    p.style.left = (32 + Math.random() * 36) + '%';
+    p.style.animationDelay = (i * 0.14) + 's';
     emitter.appendChild(p);
     setTimeout(() => {
       if (p.parentNode) p.parentNode.removeChild(p);
-    }, 1200);
+    }, 1250);
   }
 }
 
-// Petting interaction (also wakes Bơ happily if resting)
+// Petting interaction: tapping Bơ makes Bơ roll over belly-up asking for belly rubs
 function petMayMascot(e) {
   if (e) e.stopPropagation();
   const wasSleeping = mayState.pose === 'sleep';
+  const alreadyBelly = mayState.pose === 'belly';
+  const svg = document.getElementById('may-bichon-svg');
+
   clearTimeout(mayState.sleepTimeout);
   clearTimeout(mayState.sitTimeout);
+  clearTimeout(mayState.jumpTimeout);
+  clearTimeout(mayState.bellyTimeout);
   mayState.fatigueTicks = 0;
 
-  setMayPose('jump');
-  clearTimeout(mayState.jumpTimeout);
-  mayState.jumpTimeout = setTimeout(() => {
-    setMayPose(mayState.roam ? 'walk' : 'sleep');
-  }, 1500);
+  if (alreadyBelly && svg) {
+    // Re-trigger cute wiggle animation on repeated belly rubs
+    svg.classList.remove('is-belly-rubbed');
+    void svg.offsetWidth;
+    svg.classList.add('is-belly-rubbed');
+  } else {
+    setMayPose('belly');
+  }
+
+  mayState.bellyTimeout = setTimeout(() => {
+    if (mayState.pose === 'belly') {
+      setMayPose(mayState.roam ? 'walk' : 'sleep');
+    }
+  }, 4200);
 
   const quote = wasSleeping
-    ? 'Ơ, bạn gọi Bơ hả? Bơ dậy chơi liền nè 🐾🤎'
+    ? 'Ơ bạn gọi hả? Bơ nằm ngửa cho bạn gãi bụng nè 🐾🤎'
     : pickRandomBoQuote(BO_PET_QUOTES);
-  setMayBubbleText(quote, 4500);
-  emitMayHearts();
+  setMayBubbleText(quote, 4200);
+  emitMayHearts(3);
 
   if (e && typeof window.triggerZenRipple === 'function') {
     window.triggerZenRipple(e.clientX, e.clientY);
@@ -1229,16 +1248,12 @@ function handleToggleMayBubble(checked) {
 
 function handleSelectMayBib(bibType) {
   mayState.bib = bibType;
+  const strokeColor =
+    bibType === 'terracotta' ? '#D4846A' : bibType === 'sage' ? '#8FA893' : '#A5C4D4';
   const bibOutline = document.getElementById('may-bib-outline');
-  if (bibOutline) {
-    if (bibType === 'bear-bib') {
-      bibOutline.setAttribute('stroke', '#A5C4D4');
-    } else if (bibType === 'terracotta') {
-      bibOutline.setAttribute('stroke', '#D4846A');
-    } else if (bibType === 'sage') {
-      bibOutline.setAttribute('stroke', '#8FA893');
-    }
-  }
+  const bibOutlineBelly = document.getElementById('may-bib-outline-belly');
+  if (bibOutline) bibOutline.setAttribute('stroke', strokeColor);
+  if (bibOutlineBelly) bibOutlineBelly.setAttribute('stroke', strokeColor);
 
   // Update active pill button
   document.querySelectorAll('#mascot-bib-picker .bib-pill-btn').forEach((btn) => {
