@@ -29,29 +29,30 @@
         targetY: this.height * 0.35
       };
 
+      // Organic Warm Wellness Light Orbs (Sun Terracotta, Biophilic Sage, Golden Sand, Apricot)
       this.orbs = [
         {
-          baseX: 0.25, baseY: 0.25,
-          radiusRatio: 0.45,
-          color: { r: 194, g: 138, b: 74, a: 0.18 },
+          baseX: 0.22, baseY: 0.20,
+          radiusRatio: 0.48,
+          color: { r: 212, g: 129, b: 96, a: 0.22 },
           speedX: 0.0006, speedY: 0.0008, phase: 0
         },
         {
-          baseX: 0.75, baseY: 0.35,
-          radiusRatio: 0.50,
-          color: { r: 52, g: 98, b: 76, a: 0.16 },
+          baseX: 0.78, baseY: 0.30,
+          radiusRatio: 0.52,
+          color: { r: 120, g: 158, b: 128, a: 0.20 },
           speedX: 0.0007, speedY: 0.0005, phase: Math.PI * 0.5
         },
         {
-          baseX: 0.50, baseY: 0.80,
-          radiusRatio: 0.55,
-          color: { r: 102, g: 88, b: 153, a: 0.14 },
+          baseX: 0.45, baseY: 0.82,
+          radiusRatio: 0.56,
+          color: { r: 214, g: 168, b: 108, a: 0.20 },
           speedX: 0.0005, speedY: 0.0007, phase: Math.PI
         },
         {
-          baseX: 0.85, baseY: 0.85,
-          radiusRatio: 0.40,
-          color: { r: 232, g: 168, b: 124, a: 0.14 },
+          baseX: 0.86, baseY: 0.84,
+          radiusRatio: 0.44,
+          color: { r: 232, g: 168, b: 124, a: 0.18 },
           speedX: 0.0008, speedY: 0.0006, phase: Math.PI * 1.5
         }
       ];

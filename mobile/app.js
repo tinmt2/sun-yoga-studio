@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // PWA Service Worker Registration
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?v=3.3')
+    navigator.serviceWorker.register('./sw.js?v=3.4')
       .then((reg) => {
         console.log('Service Worker registered:', reg.scope);
         reg.update().catch(() => {});
@@ -411,6 +411,76 @@ function bindUIEvents() {
 
   // Initialize May Bichon Mascot Companion System
   initMayMascot();
+
+  // Initialize Lucian UX/UI #228 Cursor-Lit Liquid Glass Edge Spotlight (Desktop pointer only)
+  initGlassSpotlight();
+}
+
+/* ====================================================================
+   LUCIAN UX/UI PROMPT #228 ADAPTATION: CURSOR-LIT LIQUID GLASS EDGE
+   MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#228
+   ==================================================================== */
+function initGlassSpotlight() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+
+  const container = document.querySelector('.content-scroll-area');
+  if (!container) return;
+
+  const SELECTOR = [
+    '.kpi-wellness-card',
+    '.wellness-student-directory',
+    '.calendar-widget-card',
+    '.today-schedule-card',
+    '.revenue-hero-card',
+    '.payment-history-card',
+    '.settings-card',
+    '.u037-trigger-chip'
+  ].join(',');
+
+  let pointerX = -9999;
+  let pointerY = -9999;
+  let active = false;
+  let rafId = 0;
+
+  function paint() {
+    rafId = 0;
+    const cards = container.querySelectorAll(SELECTOR);
+    cards.forEach((card) => {
+      if (!active || card.offsetParent === null) {
+        card.style.setProperty('--go', '0');
+        return;
+      }
+      const rect = card.getBoundingClientRect();
+      const lx = pointerX - rect.left;
+      const ly = pointerY - rect.top;
+      const near = lx >= -48 && lx <= rect.width + 48 && ly >= -48 && ly <= rect.height + 48;
+      if (near) {
+        card.style.setProperty('--gx', lx.toFixed(1) + 'px');
+        card.style.setProperty('--gy', ly.toFixed(1) + 'px');
+        card.style.setProperty('--go', '1');
+      } else {
+        card.style.setProperty('--go', '0');
+      }
+    });
+  }
+
+  function schedule() {
+    if (!rafId) rafId = requestAnimationFrame(paint);
+  }
+
+  container.addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'touch') return;
+    pointerX = e.clientX;
+    pointerY = e.clientY;
+    active = true;
+    schedule();
+  }, { passive: true });
+
+  container.addEventListener('pointerleave', () => {
+    active = false;
+    schedule();
+  }, { passive: true });
 }
 
 // Bind Settings Interactive Dynamic Menu (Lucian UX/UI #037 Spring Flow & Highlight Bar)
@@ -793,15 +863,15 @@ function initLucian011Radial() {
 }
 
 // ============================================================================
-// MAY: BICHON FRISE MASCOT COMPANION SYSTEM
+// BƠ: BROWN TOY POODLE MASCOT COMPANION SYSTEM
 // ============================================================================
 const MAY_QUOTES = [
-  'Gâu! May chào bạn đến Sun Yoga 🐾☁️',
+  'Gâu! Bơ chào bạn đến Sun Yoga 🐾🤎',
   'Hôm nay lớp Sáng & Chiều đông vui quá! 🧘‍♀️',
-  'Cục bông May chúc bạn một ngày an yên ✨',
-  'Chạm vào May để cưng nựng nhé! 🐾',
-  'Nhấn Thu phí để May ghi sổ giúp nha! 🦴',
-  'Yếm gấu của May có xinh không nè? 🧸',
+  'Cún Poodle Bơ chúc bạn một ngày an yên ✨',
+  'Chạm vào Bơ để cưng nựng nhé! 🐾',
+  'Nhấn Thu phí để Bơ ghi sổ giúp nha! 🦴',
+  'Yếm gấu của Bơ có xinh không nè? 🧸',
   'Hít vào bình an, thở ra nhẹ nhõm nha! 🌿',
   'Sun Yoga Studio ngập tràn năng lượng tích cực! ☀️'
 ];
@@ -830,7 +900,7 @@ function initMayMascot() {
 
   // Set initial position
   runner.style.left = mayState.posX + '%';
-  setMayBubbleText('Gâu! May chào bạn 🐾☁️', 4500);
+  setMayBubbleText('Gâu! Bơ chào bạn 🐾🤎', 4500);
 
   // 1. Walking Loop & Panting Cycle (Đi một lát đưa lưỡi ra thở phì phò)
   setInterval(() => {
@@ -979,9 +1049,9 @@ window.mayCheer = function(type, name) {
   }, 2400);
 
   if (type === 'fee') {
-    setMayBubbleText(`Yay! Đã thu phí cho ${name || 'học viên'} rồi nha! 🐾🎉`);
+    setMayBubbleText(`Yay! Bơ đã ghi sổ thu phí cho ${name || 'học viên'} rồi nha! 🐾🎉`);
   } else if (type === 'add-student') {
-    setMayBubbleText(`Chào mừng học viên mới ${name || ''} đến Sun Yoga! ☁️✨`);
+    setMayBubbleText(`Gâu! Bơ chào mừng ${name || 'học viên mới'} đến Sun Yoga! 🤎✨`);
   }
   emitMayHearts();
 };
@@ -998,19 +1068,19 @@ function handleTreatMay() {
     setMayPose('walk');
   }, 2000);
 
-  setMayBubbleText('Ngon quá! Cảm ơn bạn đã thưởng bánh cho May nha 🦴✨');
+  setMayBubbleText('Ngon quá! Cảm ơn bạn đã thưởng bánh cho Bơ nha 🦴✨');
   emitMayHearts();
-  showToast('🦴 Đã thưởng bánh cho May!');
+  showToast('🦴 Đã thưởng bánh cho Bơ!');
 }
 
 function handleToggleMayRoam(checked) {
   mayState.roam = Boolean(checked);
   if (!mayState.roam) {
     setMayPose('sit');
-    showToast('May đang ngồi ngoan nghỉ ngơi 🧘‍♀️');
+    showToast('Bơ đang ngồi ngoan nghỉ ngơi 🧘‍♀️');
   } else {
     setMayPose('walk');
-    showToast('May đã tiếp tục đi dạo quanh phòng tập 🐾');
+    showToast('Bơ đã tiếp tục đi dạo quanh phòng tập 🐾');
   }
 }
 
@@ -1020,7 +1090,7 @@ function handleToggleMayBubble(checked) {
   if (bubble) {
     bubble.classList.toggle('is-hidden', !mayState.bubble);
   }
-  showToast(mayState.bubble ? 'Đã bật lời thoại May' : 'Đã ẩn lời thoại May');
+  showToast(mayState.bubble ? 'Đã bật lời thoại của Bơ' : 'Đã ẩn lời thoại của Bơ');
 }
 
 function handleSelectMayBib(bibType) {
@@ -1047,7 +1117,7 @@ function handleSelectMayBib(bibType) {
     setMayPose(mayState.roam ? 'walk' : 'sit');
   }, 1400);
 
-  setMayBubbleText('Yếm mới của May xinh quá nè! Cảm ơn bạn 🧸✨');
+  setMayBubbleText('Yếm mới của Bơ xinh quá nè! Cảm ơn bạn 🧸✨');
   emitMayHearts();
 }
 
@@ -1427,8 +1497,8 @@ function filterAndRenderStudents() {
                     <line x1="2" y1="10" x2="22" y2="10"></line>
                   </svg>
                   <span>${escapeHtml(packageName)}</span>
-                  <span style="color:#C7B9AA;">•</span>
-                  <span style="font-weight:700; color:#3D352E;">${feeFormatted}</span>
+                  <span class="detail-sep">•</span>
+                  <span class="detail-fee-amount">${feeFormatted}</span>
                 </div>
                 <div class="mobile-detail-pill">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1884,24 +1954,24 @@ function renderRevenue() {
   listEl.innerHTML = payments
     .map(
       (p) => `
-      <div class="payment-transaction-row" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--border-subtle);">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div class="student-avatar-badge active" style="width: 32px; height: 32px; font-size: 11px;">
+      <div class="payment-transaction-row">
+        <div class="pay-tx-left">
+          <div class="student-avatar-badge active" style="width: 34px; height: 34px; font-size: 11px;">
             ${escapeHtml(getInitials(p.studentName))}
           </div>
           <div>
-            <div style="font-weight: 600; font-size: 13.5px; color: var(--text-primary);">${escapeHtml(p.studentName)}</div>
-            <div style="font-size: 11.5px; color: var(--text-secondary);">${escapeHtml(p.package || 'Học phí')} • Ngày thu: ${formatDateDisplay(p.date)}</div>
+            <div class="pay-tx-name">${escapeHtml(p.studentName)}</div>
+            <div class="pay-tx-sub">${escapeHtml(p.package || 'Học phí')} • Ngày thu: ${formatDateDisplay(p.date)}</div>
           </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="pay-tx-right">
           <div style="text-align: right;">
-            <div style="font-family: var(--font-mono); font-weight: 700; color: var(--apple-green); font-size: 14px;">
+            <div class="pay-tx-amount">
               +${formatCurrency(p.amount)}
             </div>
-            <div style="font-size: 11px; color: var(--text-secondary);">Thành công</div>
+            <div class="pay-tx-status">Thành công</div>
           </div>
-          <button type="button" class="btn-del-payment" onclick="deletePaymentDirect('${p.id}')" title="Xóa giao dịch này" style="background: transparent; border: none; cursor: pointer; color: var(--text-tertiary); padding: 4px; border-radius: 6px; display: flex; align-items: center;">
+          <button type="button" class="btn-del-payment" onclick="deletePaymentDirect('${p.id}')" title="Xóa giao dịch này" style="background: transparent; border: none; cursor: pointer; color: var(--text-tertiary); padding: 4px; border-radius: 999px; display: flex; align-items: center;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
