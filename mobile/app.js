@@ -148,16 +148,37 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// PWA Service Worker Registration
+// PWA Service Worker Registration (iOS & Android Auto-Update Safe)
 function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js?v=3.4')
-      .then((reg) => {
-        console.log('Service Worker registered:', reg.scope);
-        reg.update().catch(() => {});
-      })
-      .catch((err) => console.warn('Service Worker registration failed:', err));
-  }
+  if (!('serviceWorker' in navigator)) return;
+
+  const hadController = Boolean(navigator.serviceWorker.controller);
+  let swReloading = false;
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!hadController || swReloading) return;
+    swReloading = true;
+    window.location.reload();
+  });
+
+  navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+    .then((reg) => {
+      reg.update().catch(() => {});
+
+      // Re-check for fresh deployments every time user re-opens pinned iOS/Android PWA
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          reg.update().catch(() => {});
+        }
+      });
+
+      window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+          reg.update().catch(() => {});
+        }
+      });
+    })
+    .catch((err) => console.warn('Service Worker registration failed:', err));
 }
 
 // Load data from LocalStorage
@@ -1836,7 +1857,7 @@ function checkExpiringAndNotify(force = false) {
     const more = expiring.length > 3 ? ` và ${expiring.length - 3} học viên khác` : '';
     new Notification('Sun Yoga — Nhắc hạn học phí', {
       body: `Có ${expiring.length} học viên cần thu học phí: ${names}${more}.`,
-      icon: './manifest.json'
+      icon: './icons/icon-192.png'
     });
     localStorage.setItem('sun_yoga_last_notified', new Date().toDateString());
   }

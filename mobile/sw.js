@@ -1,19 +1,27 @@
-const CACHE_NAME = 'sun-yoga-liquid-porcelain-v34';
+const CACHE_NAME = 'sun-yoga-pwa-v35';
 const ASSETS_TO_CACHE = [
   './',
-  './index.html',
   './styles.css',
   './icons.js',
+  './zen-canvas.js',
   './app.js',
-  './manifest.json'
+  './manifest.json',
+  './icons/apple-touch-icon.png',
+  './icons/icon-192.png'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE).catch((err) => {
-        console.warn('Cache addAll non-critical error:', err);
-      });
+      return Promise.all(
+        ASSETS_TO_CACHE.map((url) =>
+          fetch(new Request(url, { cache: 'reload' }))
+            .then((res) => {
+              if (res && res.ok) return cache.put(url, res);
+            })
+            .catch(() => {})
+        )
+      );
     })
   );
   self.skipWaiting();
@@ -25,33 +33,49 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('Clearing old cache:', key);
             return caches.delete(key);
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Network first, falling back to cache
+// Network-first (bypassing stale HTTP disk cache for core app shell), falling back to cache offline
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET' || !event.request.url.startsWith('http')) return;
-  
+  const req = event.request;
+  if (req.method !== 'GET' || !req.url.startsWith('http')) return;
+
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
+
+  const isNavigation = req.mode === 'navigate';
+  const isCoreAsset =
+    isNavigation ||
+    /\.(html|css|js|json)$/i.test(url.pathname) ||
+    url.pathname === '/';
+
+  const networkRequest = isCoreAsset
+    ? new Request(req, { cache: 'no-cache' })
+    : req;
+
   event.respondWith(
-    fetch(event.request)
+    fetch(networkRequest)
       .then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache).catch(() => {});
+            cache.put(req, responseToCache).catch(() => {});
           }).catch(() => {});
         }
         return networkResponse;
       })
       .catch(() => {
-        return caches.match(event.request);
+        return caches.match(req, { ignoreSearch: true }).then((cached) => {
+          if (cached) return cached;
+          if (isNavigation) return caches.match('./');
+          return Response.error();
+        });
       })
   );
 });
@@ -69,8 +93,8 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: data.body,
-    icon: './manifest.json',
-    badge: './manifest.json',
+    icon: './icons/icon-192.png',
+    badge: './icons/icon-192.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
