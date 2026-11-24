@@ -1,8 +1,7 @@
-const CACHE_NAME = 'sun-yoga-pwa-v37';
+const CACHE_NAME = 'sun-yoga-pwa-v39';
 const ASSETS_TO_CACHE = [
   './',
   './styles.css',
-  './icons.js',
   './zen-canvas.js',
   './app.js',
   './manifest.json',

@@ -1,53 +1,30 @@
-# Sun Yoga - Quản lý học viên
+# Sun Yoga Studio — Quản Lý Học Viên & Học Phí
 
-Ứng dụng desktop được xây dựng bằng Electron để theo dõi thời hạn học phí của học viên với giao diện đẹp và hiện đại.
+Ứng dụng quản lý học viên, lịch tập Âm/Dương lịch và theo dõi doanh thu cho Sun Yoga Studio, thiết kế theo phong cách **Warm Quiet Luxury & Liquid Porcelain Glass**, hỗ trợ đầy đủ cả **Web / PWA (Mobile & Desktop trên Vercel)** lẫn **Electron Desktop**.
 
-## Tính năng
+## Tính năng chính
 
-- ✅ Quản lý học viên (thêm, sửa, xóa)
-- ✅ Theo dõi ngày hết hạn học phí
-- ✅ Thông báo tự động khi học phí sắp hết hạn (trong vòng 7 ngày)
-- ✅ Giao diện đẹp với gradient và glassmorphism
-- ✅ Hiển thị trạng thái rõ ràng (đã hết hạn, sắp hết hạn, còn nhiều ngày)
+- **Quản lý học viên**: Thêm, sửa, xóa, tìm kiếm, lọc theo trạng thái thẻ (Tất cả / Sắp hết hạn / Quá hạn) và gia hạn nhanh.
+- **Lịch tập & Âm lịch**: Xem lịch lớp học theo tháng, tích hợp ngày Âm lịch và lịch tập hôm nay.
+- **Thu phí & Doanh thu**: Thống kê doanh thu tự động, lịch sử giao dịch và sao lưu dữ liệu.
+- **Đồng bộ Google Sheets 2 chiều**: Tích hợp Google Apps Script ([docs/google-apps-script.js](docs/google-apps-script.js)).
+- **Cá nhân hóa giao diện & Mascot Bơ**: Hình nền Studio kính mờ tùy chỉnh độ trong suốt, hiệu ứng nền Zen Ambient Canvas và thú cưng đồng hành tương tác.
 
-## Cài đặt
+## Chạy cục bộ
 
-1. Cài đặt dependencies:
 ```bash
-npm install
+# Chạy phiên bản Web / PWA (Desktop & Mobile) tại http://localhost:3000
+npm run start:mobile
+
+# Chạy phiên bản Electron Desktop
+npm start
 ```
 
-2. Chạy ứng dụng ở chế độ development:
-```bash
-npm run electron:dev
-```
+## Cấu trúc thư mục
 
-3. Build ứng dụng để cài đặt:
-```bash
-npm run build:electron
-```
-
-## Cấu trúc dự án
-
-- `electron/main.js` - Main process của Electron
-- `electron/preload.js` - Preload script để bridge giữa main và renderer
-- `src/App.jsx` - Component chính
-- `src/components/` - Các component UI
-- Dữ liệu được lưu trong `%APPDATA%/sun-yoga-student-tracker/students.json`
-
-## Sử dụng
-
-1. Click nút "Thêm học viên" để thêm học viên mới
-2. Nhập thông tin học viên và ngày hết hạn học phí
-3. Ứng dụng sẽ tự động kiểm tra và hiển thị thông báo khi học phí sắp hết hạn
-4. Click icon chuông để xem danh sách học viên sắp hết hạn
-
-## Công nghệ sử dụng
-
-- Electron - Desktop app framework
-- React - UI library
-- Vite - Build tool
-- Tailwind CSS - Styling
-- date-fns - Date utilities
-- lucide-react - Icons
-
+- `mobile/` — Ứng dụng Web / PWA chính (được Vercel tự động triển khai qua `vercel.json`)
+  - `index.html`, `styles.css`, `app.js`, `zen-canvas.js`, `sw.js`, `manifest.json`
+  - `icons/` — Bộ biểu tượng PWA (Apple Touch Icon, Favicon, 192px, 512px)
+- `docs/google-apps-script.js` — Mẫu mã nguồn Google Apps Script để đồng bộ Google Sheets
+- `electron/` & `renderer/` — Phiên bản ứng dụng desktop Electron cục bộ
+- `DESIGN.md` — Tài liệu hệ thống thiết kế và mã màu

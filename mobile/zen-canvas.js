@@ -1,14 +1,14 @@
 /**
  * ====================================================================
  * SUN YOGA STUDIO — AMBIENT ZEN CANVAS & MOTION ENGINE
- * HTML5 Canvas 60fps Organic Breathing Gradient Mesh & Water Ripples
+ * HTML5 Canvas Organic Breathing Gradient Mesh & Water Ripples
+ * Automatically pauses when tab is hidden or custom Studio Wallpaper is active
  * ====================================================================
  */
 
 (function () {
   'use strict';
 
-  // Check user motion preferences
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   class ZenAmbientCanvas {
@@ -17,13 +17,13 @@
       this.ctx = null;
       this.width = window.innerWidth;
       this.height = window.innerHeight;
-      this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+      this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       this.animationFrameId = null;
       this.isRunning = false;
+      this.isExternallyPaused = false;
       this.time = 0;
       this.ripples = [];
 
-      // Mouse tracking with dampening
       this.mouse = {
         x: this.width * 0.5,
         y: this.height * 0.35,
@@ -36,25 +36,25 @@
         {
           baseX: 0.22, baseY: 0.20,
           radiusRatio: 0.48,
-          color: { r: 212, g: 129, b: 96, a: 0.22 }, // Soft Sun Terracotta
+          color: { r: 212, g: 129, b: 96, a: 0.22 },
           speedX: 0.0006, speedY: 0.0008, phase: 0
         },
         {
           baseX: 0.78, baseY: 0.30,
           radiusRatio: 0.52,
-          color: { r: 120, g: 158, b: 128, a: 0.20 }, // Biophilic Sage Mist
+          color: { r: 120, g: 158, b: 128, a: 0.20 },
           speedX: 0.0007, speedY: 0.0005, phase: Math.PI * 0.5
         },
         {
           baseX: 0.45, baseY: 0.82,
           radiusRatio: 0.56,
-          color: { r: 214, g: 168, b: 108, a: 0.20 }, // Warm Golden Sand
+          color: { r: 214, g: 168, b: 108, a: 0.20 },
           speedX: 0.0005, speedY: 0.0007, phase: Math.PI
         },
         {
           baseX: 0.86, baseY: 0.84,
           radiusRatio: 0.44,
-          color: { r: 232, g: 168, b: 124, a: 0.18 }, // Warm Apricot Glow
+          color: { r: 232, g: 168, b: 124, a: 0.18 },
           speedX: 0.0008, speedY: 0.0006, phase: Math.PI * 1.5
         }
       ];
@@ -63,7 +63,6 @@
     }
 
     init() {
-      // Find or create canvas
       this.canvas = document.getElementById('zen-ambient-canvas');
       if (!this.canvas) {
         this.canvas = document.createElement('canvas');
@@ -78,65 +77,84 @@
           pointer-events: none;
           z-index: 0;
           opacity: 0;
-          transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         `;
         document.body.prepend(this.canvas);
       }
 
       this.ctx = this.canvas.getContext('2d', { alpha: true });
+      this.isExternallyPaused = document.body.classList.contains('has-custom-bg');
       this.resize();
 
-      // Fade canvas in gracefully
       requestAnimationFrame(() => {
-        if (this.canvas) this.canvas.style.opacity = '1';
+        if (this.canvas && !this.isExternallyPaused) {
+          this.canvas.style.opacity = '1';
+        }
       });
 
-      // Bind events
       window.addEventListener('resize', () => this.resize(), { passive: true });
       window.addEventListener('pointermove', (e) => this.onPointerMove(e), { passive: true });
       document.addEventListener('visibilitychange', () => this.onVisibilityChange());
 
-      // Global click ripple trigger for interactive touches
       window.addEventListener('click', (e) => {
-        // Trigger gentle ripple around interactive clicks
+        if (this.isExternallyPaused) return;
         if (e.target.closest('button, .filter-pill, .wellness-student-row, .tab-button, .sidebar-link')) {
           this.addRipple(e.clientX, e.clientY);
         }
       }, { passive: true });
 
-      // Expose programmatic ripple
       window.triggerZenRipple = (x, y) => this.addRipple(x, y);
+      window.setZenCanvasPaused = (paused) => this.setPaused(paused);
 
-      if (prefersReducedMotion) {
+      if (this.isExternallyPaused) {
+        this.stop();
+      } else if (prefersReducedMotion) {
         this.renderStatic();
       } else {
         this.start();
       }
     }
 
+    setPaused(paused) {
+      this.isExternallyPaused = !!paused;
+      if (this.isExternallyPaused) {
+        this.stop();
+        this.ripples.length = 0;
+        if (this.canvas) this.canvas.style.opacity = '0';
+      } else {
+        if (this.canvas) this.canvas.style.opacity = '1';
+        if (prefersReducedMotion) {
+          this.renderStatic();
+        } else if (!document.hidden) {
+          this.start();
+        }
+      }
+    }
+
     resize() {
       this.width = window.innerWidth;
       this.height = window.innerHeight;
-      this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+      this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
 
       if (this.canvas) {
-        this.canvas.width = this.width * this.dpr;
-        this.canvas.height = this.height * this.dpr;
-        this.ctx.scale(this.dpr, this.dpr);
+        this.canvas.width = Math.round(this.width * this.dpr);
+        this.canvas.height = Math.round(this.height * this.dpr);
+        this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
       }
 
-      if (prefersReducedMotion) {
+      if (prefersReducedMotion && !this.isExternallyPaused) {
         this.renderStatic();
       }
     }
 
     onPointerMove(e) {
+      if (this.isExternallyPaused) return;
       this.mouse.targetX = e.clientX;
       this.mouse.targetY = e.clientY;
     }
 
     onVisibilityChange() {
-      if (document.hidden) {
+      if (document.hidden || this.isExternallyPaused) {
         this.stop();
       } else if (!prefersReducedMotion) {
         this.start();
@@ -144,6 +162,7 @@
     }
 
     addRipple(x, y) {
+      if (this.isExternallyPaused || prefersReducedMotion) return;
       if (x === undefined || y === undefined) {
         x = this.width * 0.5;
         y = this.height * 0.5;
@@ -156,13 +175,13 @@
         opacity: 0.38,
         speed: 3.5
       });
-      if (!this.isRunning && !prefersReducedMotion) {
+      if (!this.isRunning && !document.hidden) {
         this.start();
       }
     }
 
     start() {
-      if (this.isRunning) return;
+      if (this.isRunning || this.isExternallyPaused) return;
       this.isRunning = true;
       this.loop();
     }
@@ -176,7 +195,11 @@
     }
 
     loop() {
-      if (!this.isRunning) return;
+      if (!this.isRunning || this.isExternallyPaused) {
+        this.isRunning = false;
+        this.animationFrameId = null;
+        return;
+      }
       this.time += 1;
       this.render();
       this.animationFrameId = requestAnimationFrame(() => this.loop());
@@ -187,67 +210,53 @@
       const w = this.width;
       const h = this.height;
 
-      // Smooth mouse lerp
       this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.04;
       this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.04;
 
       ctx.clearRect(0, 0, w, h);
 
-      // Check Dark Mode
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
-                     document.body.classList.contains('theme-midnight-pro');
-
-      // Zen Breathing Multiplier (8-second cycle = ~480 frames at 60fps)
       const breathingWave = Math.sin((this.time * Math.PI * 2) / 480);
       const breathScale = 1 + breathingWave * 0.08;
 
-      ctx.globalCompositeOperation = isDark ? 'screen' : 'source-over';
+      ctx.globalCompositeOperation = 'source-over';
 
-      // Draw Breathing Orbs
-      this.orbs.forEach((orb) => {
-        const xOffset = Math.sin(this.time * orb.speedX + orb.phase) * (w * 0.12);
-        const yOffset = Math.cos(this.time * orb.speedY + orb.phase) * (h * 0.12);
+      const mouseBiasX = (this.mouse.x - w * 0.5) * 0.08;
+      const mouseBiasY = (this.mouse.y - h * 0.5) * 0.08;
+      const baseMinDim = Math.min(w, h) * breathScale;
 
-        // Biased subtly towards mouse
-        const mouseBiasX = (this.mouse.x - w * 0.5) * 0.08;
-        const mouseBiasY = (this.mouse.y - h * 0.5) * 0.08;
-
-        const cx = orb.baseX * w + xOffset + mouseBiasX;
-        const cy = orb.baseY * h + yOffset + mouseBiasY;
-        const radius = Math.min(w, h) * orb.radiusRatio * breathScale;
+      for (let i = 0; i < this.orbs.length; i++) {
+        const orb = this.orbs[i];
+        const cx = orb.baseX * w + Math.sin(this.time * orb.speedX + orb.phase) * (w * 0.12) + mouseBiasX;
+        const cy = orb.baseY * h + Math.cos(this.time * orb.speedY + orb.phase) * (h * 0.12) + mouseBiasY;
+        const radius = baseMinDim * orb.radiusRatio;
+        const { r, g, b, a } = orb.color;
 
         const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-        const alpha = isDark ? orb.color.a * 0.8 : orb.color.a;
-
-        grad.addColorStop(0, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${alpha})`);
-        grad.addColorStop(0.5, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${alpha * 0.45})`);
-        grad.addColorStop(1, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, 0)`);
+        grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${a})`);
+        grad.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${a * 0.45})`);
+        grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
 
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(cx, cy, radius, 0, Math.PI * 2);
         ctx.fill();
-      });
+      }
 
-      // Draw Interactive Zen Water Ripples
       if (this.ripples.length > 0) {
-        ctx.globalCompositeOperation = 'source-over';
         for (let i = this.ripples.length - 1; i >= 0; i--) {
-          const r = this.ripples[i];
-          r.radius += r.speed;
-          r.opacity *= 0.94;
+          const rp = this.ripples[i];
+          rp.radius += rp.speed;
+          rp.opacity *= 0.94;
 
-          if (r.opacity <= 0.01 || r.radius >= r.maxRadius) {
+          if (rp.opacity <= 0.01 || rp.radius >= rp.maxRadius) {
             this.ripples.splice(i, 1);
             continue;
           }
 
           ctx.beginPath();
-          ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
-          ctx.strokeStyle = isDark
-            ? `rgba(212, 168, 102, ${r.opacity * 0.6})`
-            : `rgba(194, 138, 74, ${r.opacity})`;
-          ctx.lineWidth = Math.max(1, 2.5 * (r.opacity / 0.38));
+          ctx.arc(rp.x, rp.y, rp.radius, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(194, 138, 74, ${rp.opacity})`;
+          ctx.lineWidth = Math.max(1, 2.5 * (rp.opacity / 0.38));
           ctx.stroke();
         }
       }
@@ -259,22 +268,24 @@
       const h = this.height;
       ctx.clearRect(0, 0, w, h);
 
-      this.orbs.forEach((orb) => {
+      const minDim = Math.min(w, h);
+      for (let i = 0; i < this.orbs.length; i++) {
+        const orb = this.orbs[i];
         const cx = orb.baseX * w;
         const cy = orb.baseY * h;
-        const radius = Math.min(w, h) * orb.radiusRatio;
+        const radius = minDim * orb.radiusRatio;
+        const { r, g, b, a } = orb.color;
         const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-        grad.addColorStop(0, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, ${orb.color.a * 0.7})`);
-        grad.addColorStop(1, `rgba(${orb.color.r}, ${orb.color.g}, ${orb.color.b}, 0)`);
+        grad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${a * 0.7})`);
+        grad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(cx, cy, radius, 0, Math.PI * 2);
         ctx.fill();
-      });
+      }
     }
   }
 
-  // Initialize once DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => new ZenAmbientCanvas());
   } else {
