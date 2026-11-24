@@ -6,7 +6,7 @@
   <title>Sun Yoga Studio — Quản Lý Học Viên</title>
   
   <!-- PWA & Apple Web App Meta Tags -->
-  <link rel="manifest" href="./manifest.json?v=10.4">
+  <link rel="manifest" href="./manifest.json?v=10.5">
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png?v=1">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png?v=1">
   <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png?v=1">
@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="./styles.css?v=10.4">
+  <link rel="stylesheet" href="./styles.css?v=10.5">
 </head>
 <body>
   <a href="#main-content" class="skip-to-content">Chuyển đến nội dung chính</a>
@@ -250,7 +250,6 @@
               </div>
               <div class="kpi-card-body">
                 <div class="kpi-stat-number metric-segment-number" id="metric-total-students">0</div>
-                <span id="count-all" style="display:none;">0</span>
               </div>
             </button>
 
@@ -270,7 +269,6 @@
               </div>
               <div class="kpi-card-body">
                 <div class="kpi-stat-number metric-segment-number" id="metric-expiring-students">0</div>
-                <span id="count-expiring" style="display:none;">0</span>
               </div>
             </button>
 
@@ -290,24 +288,12 @@
               </div>
               <div class="kpi-card-body">
                 <div class="kpi-stat-number metric-segment-number" id="metric-overdue-students">0</div>
-                <span id="count-overdue" style="display:none;">0</span>
               </div>
             </button>
           </div>
 
           <!-- KHỐI 2: KHỐI DANH BẠ HỌC VIÊN CAO CẤP (PREMIUM WELLNESS STUDENT DIRECTORY) -->
           <div class="student-management-wrapper">
-            <!-- Directory Meta Bar -->
-            <div class="directory-top-meta-bar">
-              <div class="directory-meta-left">
-                <h3 class="directory-section-title">Danh bạ hội viên</h3>
-                <span class="directory-count-pill" id="student-visible-count">5 học viên</span>
-              </div>
-              <div class="directory-meta-right desktop-only-hint">
-                <span class="directory-hint-text">Nhấp vào dòng để xem hoặc cập nhật hồ sơ chi tiết</span>
-              </div>
-            </div>
-
             <div class="wellness-student-directory unified-student-card">
               <!-- Desktop Directory Header (Visible on Desktop >= 768px, hidden on mobile) -->
               <div class="desktop-directory-header desktop-table-header" id="desktop-table-header" aria-hidden="true">
@@ -1468,8 +1454,7 @@
 
   </div>
 
-  <script src="./zen-canvas.js?v=10.4"></script>
-  <script src="./icons.js?v=10.4"></script>
-  <script src="./app.js?v=10.4"></script>
+  <script src="./zen-canvas.js?v=10.5"></script>
+  <script src="./app.js?v=10.5"></script>
 </body>
 </html>

@@ -357,7 +357,7 @@ function bindUIEvents() {
     desktopSort.addEventListener('change', (e) => handleSortChange(e.target.value));
   }
 
-  // Add Student Buttons (Sidebar, Desktop Header, Mobile Top)
+  // Add Student Buttons (Sidebar, Desktop Header)
   const btnSidebarAdd = document.getElementById('sidebar-btn-add');
   if (btnSidebarAdd) {
     btnSidebarAdd.addEventListener('click', () => openStudentSheet(null));
@@ -365,10 +365,6 @@ function bindUIEvents() {
   const btnDesktopAdd = document.getElementById('btn-desktop-add');
   if (btnDesktopAdd) {
     btnDesktopAdd.addEventListener('click', () => openStudentSheet(null));
-  }
-  const btnMobileAdd = document.getElementById('btn-mobile-add');
-  if (btnMobileAdd) {
-    btnMobileAdd.addEventListener('click', () => openStudentSheet(null));
   }
 
   // Sync Buttons
@@ -515,19 +511,6 @@ function bindSettingsHub() {
   const currentTitle = document.getElementById('u037-current-title');
   const currentSub = document.getElementById('u037-current-sub');
   const currentIcon = document.getElementById('u037-current-icon');
-
-  // Fallback for legacy segmented buttons if present
-  const legacyHubBtns = document.querySelectorAll('.settings-hub-btn');
-  if (legacyHubBtns.length) {
-    legacyHubBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const targetPanelId = btn.getAttribute('data-settings-panel');
-        if (!targetPanelId) return;
-        legacyHubBtns.forEach(b => b.classList.toggle('active', b === btn));
-        panels.forEach(p => p.classList.toggle('active', p.id === targetPanelId));
-      });
-    });
-  }
 
   if (!root || !trigger || !menu || !items.length) return;
 
@@ -985,19 +968,33 @@ function triggerBoRest() {
 }
 
 function initMayMascot() {
+  const stage = document.getElementById('may-mascot-dock-stage') || document.querySelector('.may-mascot-dock-stage');
   const runner = document.getElementById('may-mascot-runner');
   const avatar = document.getElementById('may-svg-avatar');
   const svg = document.getElementById('may-bichon-svg');
   if (!runner || !svg) return;
 
+  // Cache stage width to move mascot via GPU translate3d without layout reflows
+  let stageWidth = (stage && stage.clientWidth) || Math.min(window.innerWidth, 320);
+  const updateMascotPosition = () => {
+    const xPx = (mayState.posX / 100) * stageWidth;
+    runner.style.transform = `translate3d(${xPx.toFixed(1)}px, 0, 0)`;
+    runner.classList.toggle('near-right', mayState.posX >= 56);
+    runner.classList.toggle('near-left', mayState.posX <= 22);
+  };
+
+  window.addEventListener('resize', () => {
+    stageWidth = (stage && stage.clientWidth) || Math.min(window.innerWidth, 320);
+    updateMascotPosition();
+  }, { passive: true });
+
   // Set initial position
-  runner.style.left = mayState.posX + '%';
-  runner.classList.toggle('near-right', mayState.posX >= 56);
-  runner.classList.toggle('near-left', mayState.posX <= 22);
+  updateMascotPosition();
   setMayBubbleText('Gâu! Bơ chào bạn 🐾🤎', 4500);
 
   // 1. Walking Loop, Panting & Tired-Rest Cycle
   setInterval(() => {
+    if (document.hidden) return;
     if (!mayState.roam || mayState.pose !== 'walk') {
       if (mayState.isPanting) {
         mayState.isPanting = false;
@@ -1044,9 +1041,7 @@ function initMayMascot() {
       mayState.posX = mayState.minX;
     }
 
-    runner.style.left = mayState.posX + '%';
-    runner.classList.toggle('near-right', mayState.posX >= 56);
-    runner.classList.toggle('near-left', mayState.posX <= 22);
+    updateMascotPosition();
     if (avatar) {
       avatar.classList.toggle('facing-left', mayState.facing === 'left');
       avatar.classList.toggle('facing-right', mayState.facing === 'right');
@@ -1313,17 +1308,10 @@ function switchTab(tabId) {
   const desktopTitle = document.getElementById('navbar-page-title');
   if (desktopTitle) desktopTitle.textContent = titleText;
 
-  const mobileTitle = document.getElementById('mobile-page-title');
-  if (mobileTitle) mobileTitle.textContent = titleText;
-
-  // Show/Hide Add button on desktop/mobile
+  // Show/Hide Add button on desktop
   const btnDesktopAdd = document.getElementById('btn-desktop-add');
   if (btnDesktopAdd) {
     btnDesktopAdd.style.display = tabId === 'tab-students' ? 'inline-flex' : 'none';
-  }
-  const btnMobileAdd = document.getElementById('btn-mobile-add');
-  if (btnMobileAdd) {
-    btnMobileAdd.style.display = tabId === 'tab-students' ? 'inline-flex' : 'none';
   }
   const mobileSearchSortRow = document.getElementById('mobile-search-sort-row');
   if (mobileSearchSortRow) {
@@ -1377,28 +1365,32 @@ function getInitials(name) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-// Number Counter Animation Helper (UI-UX-Pro-Max Delight Pattern)
+// Number Counter Animation Helper (Cancellable RAF)
 function animateValue(element, targetValue, duration = 300) {
   if (!element) return;
+  if (element._countRafId) {
+    cancelAnimationFrame(element._countRafId);
+    element._countRafId = null;
+  }
   const startValue = parseInt(element.textContent, 10) || 0;
-  if (startValue === targetValue) return;
+  if (startValue === targetValue) {
+    element.textContent = targetValue;
+    return;
+  }
 
-  const steps = 10;
-  const stepTime = Math.max(20, Math.floor(duration / steps));
-  let step = 0;
-
-  const timer = setInterval(() => {
-    step++;
-    const progress = Math.min(step / steps, 1);
+  const startTime = performance.now();
+  function tick(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
     const easeProgress = 1 - Math.pow(1 - progress, 3);
-    const current = Math.round(startValue + (targetValue - startValue) * easeProgress);
-    element.textContent = current;
-
-    if (step >= steps) {
-      clearInterval(timer);
+    element.textContent = Math.round(startValue + (targetValue - startValue) * easeProgress);
+    if (progress < 1) {
+      element._countRafId = requestAnimationFrame(tick);
+    } else {
       element.textContent = targetValue;
+      element._countRafId = null;
     }
-  }, stepTime);
+  }
+  element._countRafId = requestAnimationFrame(tick);
 }
 
 // Filter and Render Student List
@@ -1408,7 +1400,6 @@ function filterAndRenderStudents() {
 
   // Calculate 3 KPI Metrics from real data (no double-counting)
   const total = state.students.length;
-  let activeCount = 0;
   let expiringCount = 0;
   let overdueCount = 0;
 
@@ -1418,8 +1409,6 @@ function filterAndRenderStudents() {
       overdueCount++;
     } else if (st.status === 'warning') {
       expiringCount++;
-    } else {
-      activeCount++;
     }
   });
 
@@ -1434,16 +1423,6 @@ function filterAndRenderStudents() {
   // Update Sidebar Badge
   const sidebarBadge = document.getElementById('sidebar-badge-students');
   if (sidebarBadge) animateValue(sidebarBadge, total);
-
-  // Update 4 Filter Pill Counts
-  const countAll = document.getElementById('count-all');
-  if (countAll) countAll.textContent = total;
-  const countActive = document.getElementById('count-active');
-  if (countActive) countActive.textContent = activeCount;
-  const countExpiring = document.getElementById('count-expiring');
-  if (countExpiring) countExpiring.textContent = expiringCount;
-  const countOverdue = document.getElementById('count-overdue');
-  if (countOverdue) countOverdue.textContent = overdueCount;
 
   // Filter students based on search query and active tab filter
   state.filteredStudents = state.students.filter((s) => {
@@ -1481,12 +1460,6 @@ function filterAndRenderStudents() {
     }
     return 0;
   });
-
-  // Update visible count in list header
-  const listCountEl = document.getElementById('student-visible-count');
-  if (listCountEl) {
-    listCountEl.textContent = `${state.filteredStudents.length} học viên`;
-  }
 
   // Render List
   const listEl = document.getElementById('student-list-container');
@@ -2079,13 +2052,13 @@ function renderRevenue() {
     if (state.revenueVisible) {
       animateRevenueCounter(totalEl, totalRevenue);
       if (eyeBtn) {
-        eyeBtn.innerHTML = typeof Icons !== 'undefined' ? Icons.eye(16) : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+        eyeBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
       }
     } else {
       totalEl.textContent = '•••••••• VND';
       totalEl.setAttribute('data-raw-value', totalRevenue);
       if (eyeBtn) {
-        eyeBtn.innerHTML = typeof Icons !== 'undefined' ? Icons.eyeOff(16) : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path></svg>';
+        eyeBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path></svg>';
       }
     }
   }
@@ -2249,19 +2222,9 @@ function escapeHtml(str) {
 }
 
 // ====================================================================
-// UI-UX-PRO-MAX THEME CONTROLLER
+// STUDIO WALLPAPER CONTROLLER
 // ====================================================================
-function selectTheme(themeId) {
-  // Theme selector removed from settings; default to unified Quiet Luxury system
-}
-
-function applyTheme() {
-  // Ensure unified Quiet Luxury Glass theme
-  document.body.classList.remove('theme-apple-glass', 'theme-zen-warm', 'theme-midnight-pro');
-  document.documentElement.removeAttribute('data-theme');
-}
-
-// Apply Wallpaper to DOM (Liquid Glass Studio Wallpaper or Clean Apple Canvas)
+// Apply Wallpaper to DOM (Liquid Glass Studio Wallpaper or Zen Canvas)
 function applyWallpaper() {
   const wp = state.settings.wallpaper || { enabled: false, image: 'default', opacity: 50 };
   const layer = document.getElementById('app-wallpaper-layer');
@@ -2305,6 +2268,11 @@ function applyWallpaper() {
     if (overlay) {
       overlay.style.opacity = '0';
     }
+  }
+
+  // Pause background 60fps Zen canvas when covered by Studio Wallpaper to save GPU & battery
+  if (typeof window.setZenCanvasPaused === 'function') {
+    window.setZenCanvasPaused(!!wp.enabled);
   }
 }
 
@@ -2585,7 +2553,6 @@ function deletePackage(idx) {
 }
 
 function renderAll() {
-  applyTheme();
   filterAndRenderStudents();
   renderRevenue();
   applyWallpaper();
